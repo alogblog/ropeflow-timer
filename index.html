@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>운동 보이스 (로컬 모드)</h2>
-    <input type="number" id="gapInput" value="2"> 초 간격123456789
+    <input type="number" id="gapInput" value="2"> 초 간격
     <button id="startBtn">시작</button>
     <audio id="player" controls style="width:100%; margin-top:20px;"></audio>
     <p id="status"></p>
@@ -146,6 +146,9 @@ function bufferToWav(buffer) {
     return new Blob([bufferData], { type: "audio/wav" });
 }
 
+player = null;
+player = document.getElementById('player');
+
 document.getElementById('startBtn').onclick = async function() {
     const gapTime = parseInt(document.getElementById('gapInput').value) || 10;
     const debug = document.getElementById('status'); // 상태 표시용
@@ -173,7 +176,7 @@ document.getElementById('startBtn').onclick = async function() {
     
     const decodedBuffers = [];
     let totalDuration = 0;
-debug.innerText = "단계 2: 2데이터 로딩 시작...";
+    debug.innerText = "단계 2: 2데이터 로딩 시작...";
     for (const word of shuffled) {
         const base64 = VOICE_ASSETS[word];
         // Base64를 ArrayBuffer로 변환
@@ -200,12 +203,24 @@ debug.innerText = "단계 2: 2데이터 로딩 시작...";
     debug.innerText = "단계 3: 합성 완료, 재생 시도";
     const finalBuffer = await offlineCtx.startRendering();
     const wavBlob = bufferToWav(finalBuffer);
-    document.getElementById('player').src = URL.createObjectURL(wavBlob);
 
+    
+    player.src = URL.createObjectURL(wavBlob);
+    player.play();
 
+};
 
-    document.getElementById('player').play();
-
+if ('mediaSession' in navigator) {
+        // 재생 제어권 등록
+        navigator.mediaSession.setActionHandler('play', () => player.play());
+        navigator.mediaSession.setActionHandler('pause', () => player.pause());
+        // 원하신다면 앞/뒤 이동도 추가
+        navigator.mediaSession.setActionHandler('seekbackward', () => player.currentTime -= 10);
+        navigator.mediaSession.setActionHandler('seekforward', () => player.currentTime += 10);
+}
+// 버튼 클릭 시에는 재생만 시키고, 
+// 실제 미디어 세션 정보는 오디오가 '진짜로' 시작될 때 업데이트합니다.
+player.onplay = () => {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: '나의 운동 루틴',
@@ -216,18 +231,16 @@ debug.innerText = "단계 2: 2데이터 로딩 시작...";
                 { src: 'https://placehold.co/512x512.png?text=RopeFlow', sizes: '512x512', type: 'image/png' }
             ]
         });
-        navigator.mediaSession.playbackState = "playing"; // 현재 상태를 강제로 '재생 중'으로 설정
-        // 재생 제어권 등록
-        navigator.mediaSession.setActionHandler('play', () => player.play());
-        navigator.mediaSession.setActionHandler('pause', () => player.pause());
-        // 원하신다면 앞/뒤 이동도 추가
-        navigator.mediaSession.setActionHandler('seekbackward', () => player.currentTime -= 10);
-        navigator.mediaSession.setActionHandler('seekforward', () => player.currentTime += 10);
-    }
-    else {
-        debug.innerText = "mediaSession은 없네요.";
+        navigator.mediaSession.playbackState = "playing";
     }
 };
+
+player.onpause = () => {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = "paused";
+    }
+};
+
 </script>
 </body>
 </html>
