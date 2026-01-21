@@ -349,7 +349,7 @@ setupBtn.onclick = async () => {
     requestAnimationFrame(updateUI);
 };
 
-let isAppPaused = true; // 실제 앱의 논리적 상태. audioCtx.state === 'running' 대신에, 변수로.
+let isAppPaused = !true; // 실제 앱의 논리적 상태. audioCtx.state === 'running' 대신에, 변수로.
 
 playBtn.onclick = async (event) => {
     if (event && event.isTrusted) playHaptic();
