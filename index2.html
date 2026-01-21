@@ -335,7 +335,8 @@ setupBtn.onclick = async () => {
     // playBtn.click() 대신 아래와 같이 명시적으로 상태를 잡아줍니다.
     await audioCtx.resume(); // 오디오 컨텍스트 즉시 재개
     silentPlayer.play();     // 무음 플레이어 즉시 재생
-
+    bgMusic.play(); 
+    
     playBtn.disabled = false;
     setupBtn.disabled = false;
     playBtn.innerText = "일시중지"; // 레이블 강제 고정
