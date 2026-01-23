@@ -238,6 +238,8 @@ const MOVES_DATABASE = {};
 // };
 // VOICE_ASSETS를 분석하여 카테고리별로 자동 분류
 Object.keys(VOICE_ASSETS).forEach(moveName => {
+    if (moveName == "tick") return;
+    
     const groupName = VOICE_ASSETS[moveName].group;
     if (!MOVES_DATABASE[groupName]) {
         MOVES_DATABASE[groupName] = [];
