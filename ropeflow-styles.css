@@ -1,0 +1,146 @@
+/************************************************************************************************/
+/*                설정화면 
+*/
+:root { --bg: #121212; --panel: #1e1e1e; --primary: #007bff; --accent: #28a745; --text: #eee; }
+body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
+
+/* 메인 화면 코너 기어 버튼 */
+#settingsToggle { position: fixed; top: 20px; right: 20px; font-size: 24px; background: none; border: none; cursor: pointer; z-index: 100; }
+
+/* 동작 선택 전용 페이지 (모달 Overlay) */
+#selectionPage {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg); display: none; flex-direction: column; z-index: 1000;
+}
+
+/* 상단 헤더 영역 */
+.modal-header {
+    padding: 15px; background: var(--panel); display: flex; 
+    justify-content: space-between; align-items: center; border-bottom: 1px solid #333;
+}
+.global-btns button { padding: 8px 12px; border-radius: 6px; border: 1px solid #444; background: #333; color: white; margin-right: 5px; }
+.done-btn { background: var(--accent) !important; border: none !important; font-weight: bold; }
+
+/* 메인 바디 영역 (좌우 2단 구성) */
+.modal-body { display: flex; flex: 1; overflow: hidden; }
+
+/* 왼쪽 사이드바 (그룹) */
+.sidebar { 
+    width: 42%; 
+    background: #121212; 
+    overflow-y: auto; 
+    border-right: 1px solid #333;
+    padding: 10px; /* 버튼들 사이의 여백을 위해 추가 */
+    box-sizing: border-box;
+}
+
+/* 그룹 아이템을 카드/버튼 형태로 변경 */
+.group-item {
+    background: #2a2a2a;
+    margin-bottom: 12px; /* 버튼 간의 간격 확보 */
+    border-radius: 12px;
+    padding: 16px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 텍스트 중앙 정렬 */
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* 활성화된 그룹 강조 */
+.group-item.active {
+    background: #333;
+    border-color: var(--primary);
+    transform: scale(1.02); /* 살짝 커지는 효과 */
+}
+
+/* 그룹 이름 큼직하게 중앙 배치 */
+.group-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 12px; /* 아래 체크박스와의 거리 확보 */
+    text-align: center;
+    color: #fff;
+}
+
+/* 그룹 하단 체크박스 영역 분리 */
+.group-controls {
+    display: flex;
+    width: 100%;
+    justify-content: space-around; /* 체크박스 간격 벌리기 */
+    padding-top: 10px;
+    border-top: 1px solid #444; /* 시각적 분리선 */
+    font-size: 0.85rem;
+}
+
+.group-controls label {
+    display: flex;
+    flex-direction: column; /* 체크박스와 글자를 세로로 배치하여 터치 영역 확보 */
+    align-items: center;
+    gap: 6px;
+    color: #bbb;
+    padding: 5px 10px;
+}
+
+/* 터치 시 피드백 */
+.group-item:active {
+    background: #444;
+}
+
+/* 오른쪽 리스트도 깔끔하게 조정 */
+.move-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 15px; /* 패딩을 늘려 터치 영역 확대 */
+    margin-bottom: 10px;
+    background: #2a2a2a;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-user-select: none; /* 텍스트 선택 방지 */
+    user-select: none;
+}
+/* 선택되었을 때의 스타일 */
+.move-item.active {
+    background: #3a3a3a;
+    border-left: 5px solid var(--accent);
+}
+/* 선택 해제되었을 때 (흐릿하게) */
+.move-item.inactive {
+    opacity: 0.4;
+    background: #1a1a1a;
+}
+/* 클릭 시 눌리는 피드백 */
+.move-item:active {
+    transform: scale(0.98);
+}
+/* 체크박스 조작 방지 (클릭 이벤트가 부모에게만 가도록) */
+.move-item input[type="checkbox"] {
+    pointer-events: none; /* 체크박스 자체는 클릭 안 되게 설정 */
+    transform: scale(1.4);
+}
+/* 오른쪽 콘텐츠 (상세 동작) */
+.content { width: 60%; overflow-y: auto; padding: 10px; background: var(--bg); }
+
+/************************************************************************************************/
+/*                재생 화면 
+*/
+:root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --bg: #121212; --app-height: 100%; }
+html, body { width: 100%; height: 100%; height: var(--app-height); margin: 0; padding: 0; overflow: hidden; position: fixed; background: var(--bg); font-family: -apple-system, sans-serif; }
+body { display: flex; flex-direction: column; align-items: center; justify-content: space-between; touch-action: none; color: white; }
+
+#wordDisplay { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90%; text-align: center; color: var(--success); font-weight: 800; line-height: 1.2; word-break: break-word; white-space: normal; transition: font-size 0.2s; }
+
+.container { background: #1e1e1e; padding: 2rem 1.5rem 3rem 1.5rem; border-radius: 30px 30px 0 0; width: 100%; max-width: 500px; box-sizing: border-box; box-shadow: 0 -10px 40px rgba(0,0,0,0.6); flex-shrink: 0; z-index: 10; }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+input { background: #2d2d2d; border: 1px solid #444; color: white; padding: 10px; border-radius: 8px; width: 60px; text-align: center; font-size: 1.2rem; }
+button { border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+button:disabled { background: #333 !important; color: #666; cursor: not-allowed; }
+#setupBtn { background: var(--primary); }
+#playBtn { background: var(--success); }
+#timeInfo { display: flex; justify-content: space-between; margin-top: 20px; font-family: monospace; color: #aaa; }
+#status { margin-top: 20px; font-size: 0.8rem; color: #555; text-align: center; }
