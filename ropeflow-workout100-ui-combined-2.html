@@ -20,6 +20,7 @@
                 <button onclick="globalSelect(true)">All</button>
                 <button onclick="globalSelect(false)">None</button>
             </div>
+            <button onclick="cancelSelection()" style="background: #555;">Cancel</button>
             <div id="selectedCount" style="font-size: 0.9rem; color: #aaa;">선택됨: 0</div>
             <button class="done-btn" onclick="closeSelectionPage()">Done</button>
         </div>
@@ -97,6 +98,7 @@ let bgSource = null;
 let bgGainNode = null; // 음악 볼륨 조절기
 let isAppPaused = !true; // 실제 앱의 논리적 상태. audioCtx.state === 'running' 대신에, 변수로.
 // 사용자의 선택 상태 저장 (기본값: 모두 선택)
+let tempSelectedMoves = {}; // 설정을 위한 임시 저장소
 let selectedMoves = {};
 let currentGroup = GR_DRAGON;
 let gapTime = DEFAULT_GAP_TIME;
@@ -308,7 +310,7 @@ function renderGroups() {
         };
 
         const total = MOVES_IN_GROUP_DB[group].length;
-        const selected = MOVES_IN_GROUP_DB[group].filter(m => selectedMoves[m]).length;
+        const selected = MOVES_IN_GROUP_DB[group].filter(m => tempSelectedMoves[m]).length;
 
         div.innerHTML = `
             <div class="group-title">
@@ -340,7 +342,7 @@ function renderMoves() {
     container.innerHTML = `<h3 style="padding-left:10px;">${currentGroup}</h3>`;
 
     MOVES_IN_GROUP_DB[currentGroup].forEach(move => {
-        const isSelected = selectedMoves[move];
+        const isSelected = tempSelectedMoves[move];
         const div = document.createElement('div');
         
         // 아이템 전체에 active/inactive 클래스 적용
@@ -360,7 +362,7 @@ function renderMoves() {
 /** 3. 로직 제어 함수 **/
 
 function toggleMove(move) {
-    selectedMoves[move] = !selectedMoves[move];
+    tempSelectedMoves[move] = !tempSelectedMoves[move];
     renderGroups();
     renderMoves();
 }
@@ -371,7 +373,7 @@ function groupSelect(group, isAll) {
 
     // 2. 해당 그룹 내의 모든 동작 상태 변경
     MOVES_IN_GROUP_DB[group].forEach(move => {
-        selectedMoves[move] = isAll;
+        tempSelectedMoves[move] = isAll;
     });
 
     // 3. UI 갱신 (왼쪽 그룹 카드들과 오른쪽 리스트 모두 다시 그리기)
@@ -380,21 +382,24 @@ function groupSelect(group, isAll) {
 }
 
 function globalSelect(isAll) {
-    Object.keys(selectedMoves).forEach(move => {
-        selectedMoves[move] = isAll;
+    Object.keys(tempSelectedMoves).forEach(move => {
+        tempSelectedMoves[move] = isAll;
     });
     renderGroups();
     renderMoves();
 }
 
 function updateTotalCount() {
-    const total = Object.values(selectedMoves).filter(v => v).length;
+    const total = Object.values(tempSelectedMoves).filter(v => v).length;
     document.getElementById('selectedCount').innerText = `선택됨: ${total}`;
 }
 
 /** 4. 페이지 전환 **/
 
 function openSelectionPage() {
+    // 현재의 진짜 설정을 복사해서 임시 저장소에 넣습니다. (깊은 복사)
+    tempSelectedMoves = JSON.parse(JSON.stringify(selectedMoves));
+
     document.getElementById('selectionPage').style.display = 'flex';
     renderGroups();
     renderMoves();
@@ -405,19 +410,26 @@ function closeSelectionPage() {
     // 여기서 실제로 추출된 [selectedMoves] 중 true인 것들만 모아 
     // 기존 앱의 shuffledWords 배열로 전달하는 로직이 들어갑니다.
     // 1. 선택된 동작들의 이름(키값)만 배열로 추출
-    const finalSelection = Object.keys(selectedMoves).filter(m => selectedMoves[m]);
+    const finalSelection = Object.keys(tempSelectedMoves).filter(m => tempSelectedMoves[m]);
     // 2. 만약 하나도 선택 안 했다면 경고 (또는 전체 선택으로 복구)
     if (finalSelection.length === 0) {
         alert("최소 하나 이상의 동작을 선택해주세요!");
         return;
     }
+    // 임시 데이터를 진짜 데이터로 확정!
+    selectedMoves = tempSelectedMoves;
 
     document.getElementById('selectionPage').style.display = 'none';
-
     // 3. 기존의 루틴 생성 로직에 전달
     // (이전에는 Object.keys(VOICE_ASSETS) 전체를 썼다면, 이제는 finalSelection만 사용)
     saveSelection();
     updateRoutine(finalSelection);
+}
+// [취소 버튼] - 새로 추가
+function cancelSelection() {
+    // 아무것도 저장하지 않고 그냥 닫아버립니다. 
+    // tempSelectedMoves는 다음 오픈 시 초기화되므로 상관없습니다.
+    document.getElementById('selectionPage').style.display = 'none';
 }
 
 function updateRoutine(availableMoves) {
