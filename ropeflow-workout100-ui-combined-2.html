@@ -49,14 +49,14 @@
             <span id="totalTime">00:00</span>
         </div>
 
-        <div class="volume-controls" style="margin: 20px 0; padding: 10px; background: #222; border-radius: 10px;">
-            <div style="margin-bottom: 10px; display: flex; align-items: center;">
-                <span style="width: 80px; font-size: 0.8rem;">📢 운동음</span>
-                <input type="range" id="voiceVol" min="0" max="1" step="0.05" style="flex: 1;">
+        <div class="volume-controls">
+            <div class="volume-row">
+                <span class="volume-label">📢 음성</span>
+                <input type="range" id="voiceVol" min="0" max="1" step="0.01" value="1">
             </div>
-            <div style="display: flex; align-items: center;">
-                <span style="width: 80px; font-size: 0.8rem;">🎵 배경음</span>
-                <input type="range" id="bgVol" min="0" max="1" step="0.05" style="flex: 1;">
+            <div class="volume-row">
+                <span class="volume-label">🎵 배경</span>
+                <input type="range" id="bgVol" min="0" max="1" step="0.01" value="0.5">
             </div>
         </div>
 
@@ -464,7 +464,7 @@ function playGap() {
     const seconds = parseInt(gapInput.value) || DEFAULT_GAP_TIME;
     const source = audioCtx.createBufferSource();
     source.buffer = createTickBuffer(seconds);
-    
+
     source.connect(mainVoiceGainNode);
     currentTickSource = source;
 
