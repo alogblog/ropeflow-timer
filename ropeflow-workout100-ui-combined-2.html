@@ -48,6 +48,18 @@
             <span id="currentTime">00:00</span>
             <span id="totalTime">00:00</span>
         </div>
+
+        <div class="volume-controls" style="margin: 20px 0; padding: 10px; background: #222; border-radius: 10px;">
+            <div style="margin-bottom: 10px; display: flex; align-items: center;">
+                <span style="width: 80px; font-size: 0.8rem;">📢 운동음</span>
+                <input type="range" id="voiceVol" min="0" max="1" step="0.05" style="flex: 1;">
+            </div>
+            <div style="display: flex; align-items: center;">
+                <span style="width: 80px; font-size: 0.8rem;">🎵 배경음</span>
+                <input type="range" id="bgVol" min="0" max="1" step="0.05" style="flex: 1;">
+            </div>
+        </div>
+
         <div id="status">새 루틴을 생성해 주세요.</div>
     </div>
 
@@ -63,8 +75,13 @@ const status = document.getElementById('status');
 const silentPlayer = document.getElementById('silentPlayer');
 const gapInput = document.getElementById('gapInput');
 const bgMusic = document.getElementById('bgMusic');
+const bgVolumeSlider = document.getElementById('bgVol');
+const voiceVolumeSlider = document.getElementById('voiceVol');
+
 const MOVES_IN_GROUP_DB = {};
 const DEFAULT_GAP_TIME = 20;
+const DEFAULT_VOICE_VOLUME = 1.0;
+const DEFAULT_BG_VOLUME = 0.5;
 
 let audioCtx = null;
 let tickBuffer = null;
@@ -84,7 +101,9 @@ let selectedMoves = {};
 let currentGroup = GR_DRAGON;
 let gapTime = DEFAULT_GAP_TIME;
 
-
+let bgVolume = DEFAULT_BG_VOLUME;    // 초기값
+let voiceVolume = DEFAULT_VOICE_VOLUME; // 초기값
+let mainVoiceGainNode = null; // 모든 음성(운동음, 틱)이 통과할 관문
 
 async function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -96,6 +115,13 @@ async function initAudio() {
         const buffer = await audioCtx.decodeAudioData(await resp.arrayBuffer());
         if (name === 'tick') tickBuffer = buffer;
         else decodedBuffersMap[name] = buffer;
+    }
+
+    // 이미 만들어져 있다면 재사용
+    if (!mainVoiceGainNode) {
+        mainVoiceGainNode = audioCtx.createGain();
+        mainVoiceGainNode.gain.value = voiceVolume; // 로드된 볼륨값 적용
+        mainVoiceGainNode.connect(audioCtx.destination);
     }
 }
 
@@ -129,7 +155,27 @@ gapInput.addEventListener('input', (e) => {
     localStorage.setItem('gapTime', gapTime);
 });
 
-// 4. 이벤트 핸들러
+
+// 4. 이벤트 핸들러// 볼륨 슬라이더 이벤트 핸들러
+document.getElementById('voiceVol').addEventListener('input', (e) => {
+    voiceVolume = parseFloat(e.target.value);
+    // 핵심: 이미 재생 중인 소리들도 이 Node를 통과하므로 즉시 소리가 변합니다.
+    if (mainVoiceGainNode) {
+        mainVoiceGainNode.gain.setTargetAtTime(voiceVolume, audioCtx.currentTime, 0.05);
+    }
+
+    localStorage.setItem('ropeFlowVoiceVol', voiceVolume);
+});
+
+document.getElementById('bgVol').addEventListener('input', (e) => {
+    bgVolume = parseFloat(e.target.value);
+    if (bgGainNode) {
+        // 더킹 중이 아닐 때만 즉시 반영되도록 로직을 짤 수도 있습니다.
+        bgGainNode.gain.value = bgVolume; 
+    }
+    localStorage.setItem('ropeFlowBgVol', bgVolume);
+});
+
 setupBtn.onclick = async () => {
     playHaptic();
     setupBtn.disabled = true;
@@ -397,11 +443,11 @@ function applyDucking(isDucking) {
 
     const now = audioCtx.currentTime;
     if (isDucking) {
-        // 0.2초 동안 볼륨을 0.1(10%)로 부드럽게 낮춤
-        bgGainNode.gain.linearRampToValueAtTime(0.1, now + 0.2);
+        // 0.2초 동안 볼륨을 현재 설정된 배경음 볼륨의 20% 수준으로 낮춤
+        bgGainNode.gain.linearRampToValueAtTime(bgVolume * 0.2, now + 0.2);
     } else {
-        // 0.5초 동안 원래 볼륨(0.5)으로 부드럽게 복구
-        bgGainNode.gain.linearRampToValueAtTime(0.5, now + 0.5);
+         // 0.5초 동안,사용자가 슬라이더로 설정해둔 원래 볼륨으로 복구
+        bgGainNode.gain.linearRampToValueAtTime(bgVolume, now + 0.5);
     }
 }
 
@@ -415,10 +461,11 @@ function createTickBuffer(seconds) {
 }
 
 function playGap() {
-    const seconds = parseInt(gapInput.value) || 10;
+    const seconds = parseInt(gapInput.value) || DEFAULT_GAP_TIME;
     const source = audioCtx.createBufferSource();
     source.buffer = createTickBuffer(seconds);
-    source.connect(audioCtx.destination);
+    
+    source.connect(mainVoiceGainNode);
     currentTickSource = source;
 
     source.onended = () => { 
@@ -471,7 +518,8 @@ async function playExercise(index) {
 
     const source = audioCtx.createBufferSource();
     source.buffer = decodedBuffersMap[word];
-    source.connect(audioCtx.destination);
+    source.connect(mainVoiceGainNode);
+
     currentSource = source;
 
     source.onended = () => { 
@@ -576,8 +624,30 @@ function loadSelection() {
     else {
         gapTime = parseInt(savedGap);
     }
-
     gapInput.value = gapTime;
+
+    const savedVoiceVolume = localStorage.getItem('ropeFlowVoiceVol');
+    if (savedVoiceVolume == null) {
+        voiceVolume = DEFAULT_VOICE_VOLUME;
+        localStorage.setItem('ropeFlowVoiceVol', voiceVolume);
+    }
+    else {
+        voiceVolume = parseFloat(savedVoiceVolume);
+    }
+    voiceVolumeSlider.value = voiceVolume;
+    console.log(voiceVolumeSlider.value);
+
+    const savedBgVolume = localStorage.getItem('ropeFlowBgVol');
+    if (savedBgVolume == null) {
+        bgVolume = DEFAULT_BG_VOLUME;
+        localStorage.setItem('ropeFlowBgVol', bgVolume);
+    }
+    else {
+        bgVolume = parseFloat(savedBgVolume);
+        console.log(bgVolume)
+    }
+    bgVolumeSlider.value = bgVolume;
+    console.log(bgVolumeSlider.value);
 
     shuffledWords = Object.keys(selectedMoves).filter(m => selectedMoves[m]);
 }
