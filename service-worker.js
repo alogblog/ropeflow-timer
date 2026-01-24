@@ -1,5 +1,4 @@
-const CACHE_NAME = 'rope-flow-v1';
-const VERSION = 'v1.1'; // 이 숫자를 v1.2로 바꾸면 브라우저가 즉시 업데이트를 시작합니다.
+const CACHE_NAME = 'rope-flow-v1.1';
 const ASSETS = [
   'index.html',
   'ropeflow-styles.css',
