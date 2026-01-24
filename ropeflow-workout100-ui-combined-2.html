@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAQAElEQVR4AdSbebBlV3Xev+8J1IOGbuHYBIRE4VAGIYxAA5OZXBlcccVJSIIBA/krpspJSOzM85z471QG47jiYhQ0VXE5RZFyFRArIhFCEkIgxGiEIWCDJLqFBJKs6fr3rb33Oee+7ifd22qp8b77t9e31tp7nX3fPve8oaWdI5//hdUHvvDXZ3b5pzp/5PNc6/N/Y3Wk+JurI58bvA39ttX7b3nb6sgtfwsb/vbq/Z8Nv4gNv7R6382/hI79O+jwd7HwmfD3Vld+Jvz91ZWfDv8AG/7h6sqbwj9avfemzqf+8eq9xT/Bwo3hn67ec2P4Z6v3fDL8c2z4F9jwL1fvvmHwr9BwffjXq3dfH/7N6l3XhX+LDf9u9a5PhH+PDf9h9c5rB7+M/uXVjm2ttV2+fSrzlm0xyPWS1H1VI9p9lIK6L1kCu9toULUWE753kdgEa6d8NKiapWiw+isaSEjEBj1LpKkRH7ZF53HEm80456J29ES1FReC1aBcS/gFb4mQ1vNEpjyafny+1yCXfnyeaGpgcp0pTyxaq74eX0CPmfaRZUVPdHOSebfaFMy1wxN0ALzJ3E1gvtBBZUVzB1Mx16gaLWGXGD8k1qxonrAt2+VblqKD0GBbtiW5XgxIS00wuogfFTsTlailzOp1ohUNVnspGionYwIGbRA523rcDyCnnGOPneE+Si8y8EGIWTCtUWtt7SrhIkPFWnq6IytGnSlfmnXYFUl6zc0w6359ak2x6DDWRQcm0KNSYk+W119ed+gsTJ3H+QA4a065Tltotq3uS5bAxoKjQehClsAgWmxQ+VZrxjPSZTMKVfQ6I2ajQNUsRYNlCWxnlBiXtOg8LnPRc6apxJa06DyK6xSyBI/zAfQ7K3eR0Fwwd0aBn567oMBhWiY18NMrx3M6uVBrS+QNMBVdc5iMJNBFHKjcwip7EI1YanWTG7Ig03pPdFO51GpJxp7oZvP8WECJ9MfpAPLFaZg3HFRWNK/hirtiRmsXiVlpJmME5C5CKRG0TSwaFB3UY2i764qJ1nzhuzN07JIpTw3bEvOLaDB+UDRUTsY0jA4iZ1vSOjt5JmnZ1o6ZG2qXX0e9mL97fU3nlGNnEkitMPR4LidGwYQ7ROoyqU0oNyqhPh9vrlvhmku4bMv1uTj0imcY+kSWHaREpgHrCWSsPdQm8LAnWptYFsc2xtzYkGLNtvy871P8e4BlWwxyvSR1X9WIdh+loO5LlsDuNhpUrcWE710kNsHaKR8NqmYpGqz+igYSErFBzxJpasSHbdF5HPFmM865KOUaQZbAtmxQ49Q9grg71u4CccpcJLEiOjHm1V0QDZUjFhkqh0+vlHj+K06ScHw+QUhn3pTvWmM9voCuFXPHPGTrPdENnwL2H6dlcRD49JTZI3/8z/ltclsbPa476pyiA7DEqQarvQigRHMHQ8QdLWz04Pi8aJ6wLdvlW5aig9BgW7YluV4MSEtNMLqIHxU7E5WopczqdaIVDVZ7KRoqJ2MCBm0QOduSOtFg/JB47GM+gJzo2slytHluzrEEuIFiFkx5tZY6WceUpFhAx6HXhJbvsQRhxHI7Nj0/Z+cYy8fcyK6RdZ1pHQFSLGs1uBKakWCbs66zeI63Nc1vOoubv75uxMb6x3gAnCGnKkDJvAmhC8WzbItB7i91n6CkFhWtKZcScVUzyiiXzShU0euMmI0CVbMUDZYlsJ1RYlzSovO4zEXPmaYSW9Ki8yiuU8gS2JYNaghdyBI8xgNYnK7QFMzJFvjp48S5kVp4EsmyBn/FcxqzK58NjjyW6ZlTkyI6K+wSZQ+iEc/cbnJDFmRa74luKpc6LcnYE91snh8LKJGemgVOUtlTgZ9+kgeQL07DvOGgsqJ5DVfcFTNau0jMSjMZIyB3CUqJoG1i0aDooB5D211XTLTmC9+doWOXTHlq2JaYX0SD8YOioXIypmF0EDnbktYxfkh82OjB1r8H5DRzgrEznG16kYE7liR9vnMS7pDtcZ6XipcBnTzFl+uGJtzXMJ8gHb+vYR1O+p5whZToedYRyFjfdzZZz5x2zd3Xpwq5FJ7zmbNOLj7n25pce8vfAzjDnDKgOFveBVoBKRGNBlQ8Qm7gIWTjy9NL1czY8JRpSvgTrG1RxmhQNUvRYPVXNJCQiA16lkhTIz5si87jiDebcc5FKdcIsgS2ZYMaQhey0mzLBjU2fwTVKS9OlWoriuRki+jEVn1ONFSOWGSY7gKcCvP8rzn46cfnidbEZqc8sWiN9fgCekxuyIJVrfdEN5Wr9S3LphEk6Y+wfvuf81sxaldnPRfIdTGV2vAALHFqwWovAijR3MEQcUcLGz04Pi+aJ2zLdvmWpeggNNiWbUmuFwPSUhOMLuJHxc5EJWops3qdaEWD1V6KhsrJmIBBG0TOtqRONBg/JD5sdCNjolaamfuoB5DTylHFznB+6UUGbqCYBdOaXAnaWp590XDi/FxnylMzt+u0Hj96jlGsxzAJF0RTonSetZUjWDoO2dTZC9J9bfbEvlnT5jadZPOTP54915OgFAvoiEc5AM6IUxWgZN6A0IXiWbbFIPeXuk9QUouKZg3t8hjorhmqcdbx1eskGt9GgapZJ8yL+C6Mv4SFErHBMhc94sMmtkTZQ5AlsC0b1BC6kCWwLRvUSGzJoxxAO6U6aaEpwgFG4LVeOU6SXqka4rR0bhTg2Ydf4QwhtRJDV41omNYTj64celj1dckFUjFcg23FUW/RQD+1+VFwXAa/9oaPZBNDYOmVI0GvfdQQh1z6Hgdgcg3zhu+62br9KsFKt/+fde64eqU7rn5Yt8Owt1/9EH54UHd8LDzQbfSDuvvGle6+5SE99PUdrb7DFu51Xc9cS9wthdxi+HbXFSNcdo65+8M+/J2Vjn78e8UxbDh67d06BrFHr71LRz/ROIY+du13dewT4U5s5zrsdcd05+B6dCj/KPHwHX33+sadZe/QnTeE23XPl+9mo9lRA4ddGrPOcb8H5MRySrGD+299kq58x2d28Wn8mfe9I/omve+de/EpcvCuG/WOX7lev/Frn9UHf/UL+vCvfUXX/Oo3dOv779LR//WAbrv2Hj10R3vOjud19pFbPHYveGfZdqZpde9KN//fb+j977lu4kjXsTOf0JH3nohrie/m48TgyhNxjT5w5TU6ArHhoW/ey17yPgK7466vvSPTSxPb9XuAZVsMcr0k4T+w86Du+v69p5Rv3HZMt3z193TDzV/TVdd/Se//4A16729er9868gV97n/crjs+eJ8e+pLVGpZ9ZC9Wf+HbJr2Oe/6ue+47pfvd9v27dsaYPQb2JTAMG83nX61xGrmFxsk01+2Z1mY87mPeZA7mg1d/Rkc+9Eld91tf010ffFCre7h021C22MDPXsm0jp9ENy12GsdpH5Nom8meC9yk+gHwhc4pgTmhoLKiuYN5AnsO4yo+Ge/+0LX6yH/+or530wNc3bWrjOoqdiaqZfUD0NpOzE5mvNh3NN8DyHMUdSqTjeDmj0mCKaer5yDymLr5Y7/HIdzPc7XtK/the91f5eZvsF960qed7CN7zEZK49BrnxnyPa59D5jufKaiFeQ4smORp7lfdf0XdfPHvqnv33Q/O8meGtb6S/gN/QC0tjexp6YsoVWt6foE1OkQXCW5KsHQenJNnf4xh/DlG29TfszMHRTGdrPPcPp3ub6D7KkgnL1mz8rfr/DTd8wXPaisaF7DxAn8wPRrbviKvnPj99iPC7O/ID6ptismxeoHoFlmL0HDZo8WLYPVPwGcTXqRIc9ZnquRoC3ba674MT0SFz/r6XrGj5y3ZdU2Pd8Tvv317+phftZnh3wPYMweuc3o+Nl7m7vpmP285ornsOe9eC65Pbic+AnItWs/iGxPDHnmJ9Z02+eO6kRyGsyUZVsMcn8pvjZv5551QM+/+Ol6+VvPh2foZW8NF+hlPw9vvRB7oX7mF5+n1/61S/TWX3gFb+zHtG27+pNf1t033CPz0i4Ss7Zrz3n203TFWy6G53d+HBteoMvf0nkzdsmbLtHlcNmbL9Flb36hLntTeBE2XKqzX3k+O8tOQvYT6ylmQsbjbwEoTkc4ouWEimjIacVsw0NPfkg6yArwAanoWvGfIp190ZP1Qy8/oOe99mn6+de9Qtu0fAoeuOuhutundXkPQD+ZLUv7d4oVdon2EQ/Etf8MrfZ1okH4RTRMeTaWvdRmFs/8+tqSWPH1XjGH6sYEDEF3tLDasrnmuyoon6AgE7XshoSFQxfs05MvPUN/6c9cqm3a0Tv5BFBL1CiioVW1tm6sFVjtpYWNbmQc+aYzLmlZS2vrReuxXAMI1Ay+B3AO6bvIydVpZeaWUIoHHB2RGrlVY8czMHqOSYfO36/zLz605feFlR6+Z5Uyx7PlfjM9e1oyvf96D4vrkCDEm6Mj6Fk+7wGvYgz1fvHT59qtFmVqzY5tCaz2ErqQJTBo62ap17EsgW3ZVmvYaLBMyDp44Zk6xPcPnI360Tu/L90rVnuNRHQSbVQReypkqlh2R1jQLhJNLDZEq5oZzWx3K9lNo+hofD4B80lyaDhqYNJzchKTtUVLoU7WL9GoNfLqlztgXXAh3xzwN+m338Gfe6lBz81Ud1Ous8naE80ZdVqxeUZqFoQyZ7P8/PWqtSxc8b6jp/WrVnDHJIIWNnrQctquOdMzWHZDwoKqmbFhYoGADp55ZsxG/PAfO0c6uNNXW1pcB0fbNysvMS5JLIjWrEupzzM2xC/LPghJNRDBt600JxYdomH6BORkckIh92Ts8hmWAhvD6U7ru84t2mJU77Gln9r1WInYgKccPjslJ9b2n8Ib1Fibsran9pyu908tOpumZ05flFiBT5gknQAdQScY3Wq0Sc1f19xClhYnYuPL00sn2WxqQFtuKRqs/ooGEhKx1Xf4F7c8VrRZO5Mf/3YO7DDZC0Sl4WvLlnWS7YawIPxClsAw7NCqZkaTdbeadJR6HcsS2JZtLX4PULVxShxgbiqO0lCprYZRR/kZeBTD0lUwZM4oevet9+n/8480w380e/aBfXX3T/OoJ64Voym4reDfrimQfWEUaijRalUOn16pGrhuy/KlIlFzRK0E8dscHHTlFpZbiC8wk9UxNsRvVifZstqiHGCbYHRBcLL549q3v35X/QuWNmxPOvfJss3sTjTSco9hNu58sX7/D7T6/fukb/1BZ7eOf5/8rYbK8mPYt8M9Utl75dvukZ09SOal6CBLYFu2JbleOxyG0trJ8OzDqRhDxfBPqrOY3u7SRa0pRlHC9ZfN266+S7/x4RuJbNZfdvGP6pznnlW1Wz32TbGh647brFTN+sg1t+jIf72q89vYwf/WkV9Z8lEdeXv4iD7w9o+gm43+wNs/TOzDuutzt9W+soe2Hy4x7W3+hLT8SvVTEFPqNHImQjVES8RlGTbuZzx4hh4+auCCPNsfhtXRWT/8jVX9Xf/uD92rygqlrAAAEABJREFU6953q97xm/9v49qZ+LwXPkN+ypOQZrfrKHeXSW3R86eN/FPoqaBdlg3UPqy8lBHftoRWWjT0n4KcAylq4MTUJ+YUtWW79pO36qP//YuNX8f++hf00eLz+tB/+oyu/I+f0Dv/2zX6Lx/4bf5B/otbVb+Yv6Tu5zfnsc9stWCovWIrt1XVUzx57AGbPS1pV+IgyGWf9QnAJW6+5C4rTgZBN9LYzXvupvwT4l7kv4TInZZ5m1dtM/OX1te86iKd9ZyzxcYKq73Enm1LGuj0tcU+bMs2e7HyEqOqmdH8e4B4NEAeXHVSHEtZTmjYpE83+eL/7E9foYOvPJetroB9s8H55+wRI34aN8uXrTbA1voecctptiSTat/sk5+CGOtU2okYvUT4Os0tX/yf/skf13mvPo/dLHdnKXdXEBpsZ9Tpaq4LW3ZDshTwBc0zEmTxe4A5Gk1tOiEiHNRajtAT3vMvVW/5Ky/XBT/1NDl/b2cH2dfYJx/YtscKIrF0Zp2ePvY1bO0vW8mmYMUXfYU/8sd/AnJKICYaVFpPeMtd/1f5wl/+p5+ts151SD54huR0Y4ywbEvqRIPxrdPX2ILs7MDKS11LlmB9dPseINo4kWFzcpMm/0T3v/CaF+qpr/lh+UfP5Fm6eL6zKXrd6rF7sc1+8+/Tlz//WToVjP20r1/bd2k2tLzzcRNW/RSkOhnXGF3k5CBRbdRO7aT/edVNuvtTd9eesoeB2FMhc0HL7ggLwi/IbtpffMmf0Kt/7sXwEr3q5zpvxBYv1aveOHiZXvnG8HJs5w3YN/yEXlm8Que89Fntsn0f2ZW0PsYf9N8DuKHUqGOpo2qBnChqq547ai82LZQfU3/3d27Xw8f4t18WZR9h2h+x9MQKnGx7d57wRn11mE8a6BB/Ej+0TzrcWKEb+xWrc4lPEDt3He1rvyCOfWRPBX8vyj6nzVRQfAI4KdvE3c4pOuAJbGublmf3n/tTL9Br33QpXLbGX/7zl2/1z47X3PA7+t7n26dA7MPOXtax2ksLq5NqvU6u4RTIYNmNFrEINIQG27ItyfWKVTUzumIZcUqLcYJ10ycgJ5YTarRn1wqHrm2bD1gHL9kP+3TwBQH9gv3ad+k+/eQVz924XD4FX/0Kn4KjD/LxHHsqyfeFdbvc/8YXWE7kjpzeb+lRv113rf5aPvMSaDZfrwbrqD/VjA6ZGrre0a4TyWkVnI5ttTZs8zYZTd0g7MD8/f68Z5691afg43wK7v3s4r+EY092KjeELmSl2c1Gb0fWmSpmmbECS4xF6oK7b6OgcolFgyU8ywZZ2oXxl/B7gDg6SM/J7EI8u0Qs6W1od8FiRWrAvov3b/0p+NpX79CqPgVslRpVm9JIAkNgeXPJRW1FFWorsr5IrYSSW1A5/GGnrw2x6FVfN+VTI6wYgJ5p0yd4R5xUITPDshsSFtILbdtYTy3VYmMa+VesbT8FV9/4Jd17y91Vw9QLOKViZ6IskdHWra2zLdu12rIUHYQG27ItyfVS1/GDJZlXGy11Pazxg1hnm98D6kh4XmHH8yqnlyOKDXVk2raNmtykVXu2+5538KQ+BQ/zKch+QvYU21hcK4ltt8r8Vid7bLVSZsSWej22mJsaob9XZJbly0jR6pOfr3Oc2Pn3AE7DdtYBNhos459Mzzqzeh0lUt8Lztnqe0E+Bd+/6RjL3aAOQrYbwkJiDW3VzGy7xigpGixLYFu2JQVJ0WBZguUYf2By0bEhesn0U9B0srVA05FxoDksAlv2vrCbuhNyjVFl30UHtv4U3HDz7/K94IG2t14oNQv8XKs2W4LAFn3F+06daf2KxZDYEqJ0tz0kj4fh/fFvKhH41aOB3koiUqdyGfCT2LEt24SsvBB0T3gRJbhht5SaYLWXooGEJGL8bee8Z273KfjSV7+l+2/6rsT6AZXwrDSjVOikWq3PHkPVIYK2TT0TcVkGetOuqPFVKuME61xRE7JsS+pEw/QJ4AjTT4y2a3W4DDnxQU576Dz7ovddtP33go9/9latjt3f95lncGB/43rIk+pjPXZ9r9zs2Szxse9yGQixj359Ltr8zIf4BJhWc1rNzA3kSdC1wzw6p8JpCKz+igbha8tm5pt1QdiZqEQ7B87Q4Qu3/xR8/9PHqNpqKHsMsgSGWG3bUgPGehsFGvWiwRIRywZZ2oXxlzxant8DzHFogkPLYXFqhOKQ2rZnWU43TGsryHOSQEmG5PdfdNZJfC/4qlZ3PlD7rIFalK2emqGcbYbUgKxdUvVTh1z0ii/wCn/MQbZeQb5meCUZMge3dfy2vs/BT36HehKnySDJ02vo2IY2bqkiatpmTScaabWX8G1L9Sk4d6ufiPK94Ls33Cbz0i4SC9q6mRWW3ZCwIPzogSWZVxstdT2s8YNYZ1tSJxqMHxQN9T2gTiYnIk4nFpAJ1yeBaNyNqeUMOeHGeO5RiQA9ompH77vo7K0/BTd94ev1H1JxmdpX6hR4I4bcuNdaFg6bNz+e+aWpRHraM27C5UdUjmBbj5eOkxqVL11ve17DnJ06DTFyGoyU8Bomp0JbNjPfrFxHXKeQWx7f9Sk4tPWn4Bs3fJMqbnVKNU1g625btlkXYrD4luOsjeperLuODYktGbHYsMyJVv9lHAdRp8IhEeq9gpxYd7c2i/UlGao+NnfEqJdYOJlPwVe+9m0+Bfe2vVMwpZe1CW3cs4fQFri9cQrSq+SKv4mt4rQJJ8gT2ibf69QnwItTVNfDtpyUv/Nvxn5V4+4RZH0ojS9ZWmB0yP8Ad/jCQ8p/eLXZdQ7oW7fdqds/++2qkJpVp67Bfg/u33jPWRtqPdVUzYzGa+CUFuME12pZE7JsS+pEg/GDoqHlNbX6HjBONgcYnedWac4++sD5+/T6N7+48SbsxEv0+jet82f/4iU6+5kH211JsazH1O0RuxdcSvuee65e9icv0s++8eW7+An8xuveGPsKve4Nr9BP/czlOuf8Q1lKfTrF6RL/ivW8lz6bOa+ceT369a/S69Z4Nf6r9dTnPI3FdBbT573zZZr2Hx34wtScpe6BNnd8vxs2dTO52czBm/qOZGmB0UuSO+u5B/SUl54LhzqHsY3zXnJY573kvJkXP0U7Tz9zqqKcepAlsC0b1BC6kKX9Ozp8xY80Ln+qDsOhwWVP1aHL/rgOw7CHL3ua9l/0Q2qN9dQwaP+TdOhFT4fzde6LwjN07qWdF2FfdAHxxjkvvED7nvNUqe/DkpwXfmy8JYktWeail7noxGZQ1NWicQDd42RzK3XT74Kei+mJbvbIH/9zfmouqZuFIvQK1xAn1+CNP3K+30XMp9fSGng+13KGeX3bS8sn0ZjyFIiuPKmyiWUP+MkFZOvkMqebPd4/+2N2zWFYW0/8RJ0DMPGBuLyLUnValogoGqz2UjRUTsYEDNogcrYldaLB+CHxYaMbGRO10sxc7SKxkPiwqmZGy27gCCXhF7IEtmVbkuulruMHSzKvNlrqeljjB7HOtqRONBg/KBpaXnu2/j2A5xVTODROFh3BcecE94I0czlx5ua5Ns/r6wnQF3PG3Gb3XE+CkkyiI+jsrGscOjMIIeq6yPT5WuP685osmPMt3mKLuRSh5LRf3EwpP6JyBFsdvHSc7KHypVttJILOHEZW7d13clpLJEsLjF6yzEUvc9HKqQdZAtuyQQ2hC1kC27JBjcSWJBo/NkSrmhldqzRG6kQX0ZAZ8W0URCstGojirY+i3mDORFla5KLd/diQ2Ixohr37Rr8H5CBzqmEqVcF2viUZKo/NHTHmJVYQSKpyJQjQK4dPr1QNccilnzg/v6k5zzM/63Yx5YlHp6byRcPPtbrhTu/r1VtPdEOe9xqnp7M2JFQwzPXHpEe30ydAuRtAypuDaDB+UDRsnJclcGfo2CVzPlFLzF9i/JBY2ezBomWw7AYBoST8QpbAtmxLcr1iVc2MrlhGnNJinGBdckHRsMxVTMmasGVbUtDGje8B4znYbE7xRNRp91POc6/NyZrA9QjQpztlt3709e0O4xIU6xqHnqUE6BSlI+gkosdeMqn5LJ9yY14C0W2vbR46U3HoKPKM0cVS90C7FutSjhh9er/z9UmydvSsGTp2t7/rpyBzfuuIyEzUrnxOPfR5NvmAj2KBG/ii2ZYNaghdyMkyztZ4KkRz4fLXRyXW60wZfNtSciEaWsSyQZZ2Yfwl2+WZTV0tmu2FJ9nrPgeg1nJwQM9hzifbsv324DmJX3MYcge0ySPItB7HVKqGOEyRWI/OOkylaoij1iqHT69UDX+Ef85v72rvkQPIiUBOBswXKSgaJEshGml0EL5tSZ1oMH5IfNjoRsZErTQzV7tILCQ+rKqZ0bIbOEJJ+IUsgW3ZluR6qev4wZLMq42Wuh7W+EGssy2pEw3GD4qGltdJN74HLO5abrtxB+bOGzrPrd06H5E5dnyNPdeT4DIsoCPotfmpFl7FGOq6+OlTHkFnMb3mkO028QGXYYvteV26TSPW1uEmXH4EJWLKz3XjxIZZt7W5RouNKrF7kcp75aTppyCrvYRd0qIZG8qpB1kC27JBDaELWQLbskGNxJYkGj82RKuaGV2rNEbqRBfRkBnxbRREKy0aiOKtj6LeYM5EWVrkot392JDYjGiGR+qPnN/+94AcaOjXzN1Q4Fc4Q8BPrxw+PTcNtxDROJj0E+fnTc/59v2jimR9Z8rjR6em8kXDz9xuuLP7evXWE92QZ2txejprQ0IFw1x/THrsdvoEKHcLSHnzEA3GD4qGKS9L4M7QsUvmfKKWmL/E+CGxsrmGRctg2Q0CQkn4hSyBbdmW5HrFqpoZXbGMOKXFOMG65IKiYZmrmJI1Ycu2pKBT1qbvAXXa/ZTz3MtpNzueo822eLtblvrR1/c1fevTWnwuS5JOkI6gE4xue2iTmr+uWyyTs2a5R3SmMoGOIs8YXSx1D7RrsS7liNHnT0bFqJEga0fPmqFjt/Xnn4L6yRq7RDn1IFPfsjvCgvALmbxkuyEsCL+QJTAMO7SqmdFk3a0mHaVex7IEtmVbUicammfZIEu7MP6S7fLMpq4WzfbCk+ztfA5ArXHC4uftMkRy0EFTIMHcAZ3m4gyBVXvOZt1YNq1PGipHkl6pGrguqepznlqJjIndTnn86Fq/mLfKHvCTC8jWVxig15LkAtHWe6Kb+c5v2cdt5AByYpCTi+ENGIRvmwt3osFqLy1sdCPjyDedcUnLWlpbL1qP5RpAoGYoOmh33kQsLXI4IgJjbDbxgStrXMu2pE40GD8oGlpej1vr3wPGc48bmtuCHjHdBfF3k9toji3Wk8hdhGnr+9anufhznnX46VMeQef6dCbu1vFDq8965pSmSEmGyi/84/OZlPpZv9SJNWoNKTwqPVKvSY8w4ZHz009BOfWQky9kilp2R1gQfiGfON/j6tYLO7SqmdFk3a1kN42io/EtS2BbtiUFSdFgWa6FVj0AAAC1SURBVILlGH9gctGxIXrJiMWGZU7VXOPew2PLH/97QA4s9CvmbirwK5wh4KdXDp+em6bdMHGShBPn503PeZ75WbeLKU88mpJ01uPngt3waevryVbviW7Is7U4lWSIBnrKHJ9nyhPRp0+AcjeBxJtbYHRIfNjoQWJBtGZdSqwLxoahlWtYtAzGbRAQSqq8JTVsy7Yk1ytW1czoimXEKS3GCdYlFxQNy1zFlKwJW7YlBU3t8RZ/CAAA//+cI+iyAAAABklEQVQDAJS2v20VzTCtAAAAAElFTkSuQmCC">
+    <link rel="stylesheet" href="ropeflow-styles.css" type="text/css" />
+    <title>RopeFlow Pro Timer</title>
+    <script src="voices.js"></script>
+</head>
+<body>
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------- -->    
+    <button id="settingsToggle" onclick="openSelectionPage()">⚙️</button>
+
+    <div id="selectionPage">
+        <div class="modal-header">
+            <div class="global-btns">
+                <button onclick="globalSelect(true)">All</button>
+                <button onclick="globalSelect(false)">None</button>
+            </div>
+            <div id="selectedCount" style="font-size: 0.9rem; color: #aaa;">선택됨: 0</div>
+            <button class="done-btn" onclick="closeSelectionPage()">Done</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="sidebar" id="groupList"></div>
+            <div class="content" id="moveList"></div>
+        </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------- -->
+
+    <div id="wordDisplay">READY</div>
+
+    <div class="container">
+        <div style="text-align:center; margin-bottom:15px;">간격(Gap): <input type="number" id="gapInput"> 초</div>
+        
+        <div class="controls">
+            <button id="setupBtn">루틴 셔플 & 시작</button>
+            <button id="playBtn" disabled>재생 / 일시정지</button>
+        </div>
+
+        <div id="timeInfo">
+            <span id="currentTime">00:00</span>
+            <span id="totalTime">00:00</span>
+        </div>
+        <div id="status">새 루틴을 생성해 주세요.</div>
+    </div>
+
+    <audio id="silentPlayer" loop style="display:none;"></audio>
+    <audio id="bgMusic" controls src="./whip-afro-dancehall-music-110235.mp3" loop></audio>
+
+
+<script>
+const wordDisplay = document.getElementById('wordDisplay');
+const setupBtn = document.getElementById('setupBtn');
+const playBtn = document.getElementById('playBtn');
+const status = document.getElementById('status');
+const silentPlayer = document.getElementById('silentPlayer');
+const gapInput = document.getElementById('gapInput');
+const bgMusic = document.getElementById('bgMusic');
+const MOVES_IN_GROUP_DB = {};
+const DEFAULT_GAP_TIME = 20;
+
+let audioCtx = null;
+let tickBuffer = null;
+let decodedBuffersMap = {};
+let shuffledWords = [];
+let currentIndex = 0;
+let currentSource = null;
+let currentTickSource = null;
+let isPlaying = false;
+let routineStartTime = 0; // 전체 루틴 시작 시간 (UI 타이머용)
+let totalDuration = 0;
+let bgSource = null;
+let bgGainNode = null; // 음악 볼륨 조절기
+let isAppPaused = !true; // 실제 앱의 논리적 상태. audioCtx.state === 'running' 대신에, 변수로.
+// 사용자의 선택 상태 저장 (기본값: 모두 선택)
+let selectedMoves = {};
+let currentGroup = GR_DRAGON;
+let gapTime = DEFAULT_GAP_TIME;
+
+
+
+async function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (Object.keys(decodedBuffersMap).length > 0) return;
+    status.innerText = "음성 데이터 로딩 중...";
+    for (const [name, base64] of Object.entries(VOICE_ASSETS)) {
+        //console.log(base64)
+        const resp = await fetch(base64.data);
+        const buffer = await audioCtx.decodeAudioData(await resp.arrayBuffer());
+        if (name === 'tick') tickBuffer = buffer;
+        else decodedBuffersMap[name] = buffer;
+    }
+}
+
+// 오디오 컨텍스트에 배경음악 연결 (처음 한 번만 실행)
+function initBgMusic() {
+    if (!audioCtx) return;
+
+    // bgSource가 이미 있다는 건 이미 연결되어 흐르고 있다는 뜻입니다.
+    if (!bgSource) {
+        // 1. 음악 소스 생성
+        bgSource = audioCtx.createMediaElementSource(bgMusic);
+        // 2. 볼륨 조절 노드 생성
+        bgGainNode = audioCtx.createGain();
+        // 3. 연결: 소스 -> 볼륨 노드 -> 최종 출력
+        bgSource.connect(bgGainNode);
+        bgGainNode.connect(audioCtx.destination);
+        
+        // 초기 배경 음악 볼륨 설정 (예: 50%)
+        bgGainNode.gain.value = 0.8; 
+        bgMusic.volume = 0.8; 
+    }
+
+    // 만약 음악이 멈춰있었다면(첫 시작 시) 재생, 이미 나오고 있다면 아무 일도 안 함
+    if (bgMusic.paused) {
+        bgMusic.play();
+    }
+}
+
+gapInput.addEventListener('input', (e) => {
+    gapTime = parseInt(e.target.value) || 0; // 숫자로 변환
+    localStorage.setItem('gapTime', gapTime);
+});
+
+// 4. 이벤트 핸들러
+setupBtn.onclick = async () => {
+    playHaptic();
+    setupBtn.disabled = true;
+
+    // if (audioCtx) { 
+    //     stopAllSounds(); 
+    //     await audioCtx.close(); 
+    //     audioCtx = null; 
+    // }
+
+    // [변경] 컨텍스트를 새로 만들지 않고, 기존 것을 재사용합니다.
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } else if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+    }
+    // 1. 현재 재생 중인 모든 운동 음성/틱 소리만 즉시 중단
+    stopAllSounds(); 
+
+    await initAudio();
+
+    // 무음 오디오 위젯 활성화
+    const sampleRate = 8000;
+    const dataSize = sampleRate * 600;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+    const writeString = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+    writeString(0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(8, 'WAVE'); writeString(12, 'fmt ');
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate, true);
+    view.setUint16(32, 1, true); view.setUint16(34, 8, true); writeString(36, 'data');
+    view.setUint32(40, dataSize, true);
+    new Uint8Array(buffer, 44).fill(128);
+    const blob = new Blob([buffer], { type: 'audio/wav' });
+    if (silentPlayer.src) URL.revokeObjectURL(silentPlayer.src);
+    silentPlayer.src = URL.createObjectURL(blob);
+
+    // 셔플 및 총 시간 계산
+    // if (shuffledWords.length == 0) {
+    //     shuffledWords = Object.keys(decodedBuffersMap).sort(() => Math.random() - 0.5);
+    // }
+    // else {
+    //     shuffledWords = [...shuffledWords].sort(() => Math.random() - 0.5);
+    // }
+
+    shuffledWords = [...shuffledWords].sort(() => Math.random() - 0.5);
+
+    console.log(shuffledWords)
+    console.log(shuffledWords.length)
+
+    //const gap = parseInt(gapInput.value) || DEFAULT_GAP_TIME;
+    totalDuration = shuffledWords.reduce((acc, w) => acc + decodedBuffersMap[w].duration, 0) + (gapTime * (shuffledWords.length - 1));
+    document.getElementById('totalTime').innerText = formatTime(totalDuration);
+
+    isPlaying = true;
+    routineStartTime = audioCtx.currentTime;
+
+    // playBtn.click() 대신 아래와 같이 명시적으로 상태를 잡아줍니다.
+    //await audioCtx.resume(); // 오디오 컨텍스트 즉시 재개
+    silentPlayer.play();     // 무음 플레이어 즉시 재생
+    initBgMusic(); // 배경음악 연결 확인
+    //bgMusic.play(); 
+
+    // 4. 새 루틴 시작 (배경음악은 pause/play 없이 계속 흐름)
+    playBtn.disabled = false;
+    setupBtn.disabled = false;
+    playBtn.innerText = "일시중지"; // 레이블 강제 고정
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = "playing";
+    }
+    playExercise(0);
+    requestAnimationFrame(updateUI);
+};
+
+playBtn.onclick = async (event) => {
+    if (event && event.isTrusted) playHaptic();
+
+    if (!audioCtx) return;
+
+    //initBgMusic(); // 배경음악 연결 확인
+
+    //if (!isAppPaused) {
+    if (audioCtx.state === 'running') {
+    //if (playBtn.innerText === "일시중지") {
+        // 일시중지 실행
+        await audioCtx.suspend();
+        bgMusic.pause(); // 운동 멈출 때 음악도 정지
+        console.log("bg pause")
+        isAppPaused = true;
+        silentPlayer.pause();
+        playBtn.innerText = "루틴 재개";
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
+    } else {
+        await audioCtx.resume();
+        bgMusic.play(); // 운동 시작할 때 음악도 재생
+        console.log("bg play")
+        // 재생 실행
+        isAppPaused = false;
+        silentPlayer.play();
+        playBtn.innerText = "일시중지";
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+    }
+    syncMediaPosition();
+};
+
+</script>
+
+
+<script>
+
+
+
+/** 2. UI 렌더링 함수 **/
+
+// 왼쪽 그룹 사이드바 렌더링
+// renderGroups 함수 내 HTML 구조 변경
+function renderGroups() {
+    const container = document.getElementById('groupList');
+    container.innerHTML = '';
+
+    Object.keys(MOVES_IN_GROUP_DB).forEach(group => {
+        const div = document.createElement('div');
+        div.className = `group-item ${group === currentGroup ? 'active' : ''}`;
+        
+        // 버튼 자체를 클릭하면 그룹 변경
+        div.onclick = () => { 
+            currentGroup = group; 
+            renderGroups(); 
+            renderMoves(); 
+        };
+
+        const total = MOVES_IN_GROUP_DB[group].length;
+        const selected = MOVES_IN_GROUP_DB[group].filter(m => selectedMoves[m]).length;
+
+        div.innerHTML = `
+            <div class="group-title">
+                ${group}<br>
+                <span style="font-size:0.75rem; color:var(--primary); font-weight:normal;">
+                    (${selected}/${total})
+                </span>
+            </div>
+            <div class="group-controls">
+                <label onclick="event.stopPropagation()">
+                    <input type="checkbox" ${selected === total ? 'checked' : ''} 
+                        onchange="groupSelect('${group}', true)">
+                    <span>ALL</span>
+                </label>
+                <label onclick="event.stopPropagation()">
+                    <input type="checkbox" ${selected === 0 ? 'checked' : ''} 
+                        onchange="groupSelect('${group}', false)">
+                    <span>NONE</span>
+                </label>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+    updateTotalCount();
+}
+// 오른쪽 동작 리스트 렌더링
+function renderMoves() {
+    const container = document.getElementById('moveList');
+    container.innerHTML = `<h3 style="padding-left:10px;">${currentGroup}</h3>`;
+
+    MOVES_IN_GROUP_DB[currentGroup].forEach(move => {
+        const isSelected = selectedMoves[move];
+        const div = document.createElement('div');
+        
+        // 아이템 전체에 active/inactive 클래스 적용
+        div.className = `move-item ${isSelected ? 'active' : 'inactive'}`;
+        
+        // 전체 영역 클릭 시 동작 호출
+        div.onclick = () => toggleMove(move);
+
+        div.innerHTML = `
+            <span style="font-size: 1.1rem; font-weight: 500;">${move}</span>
+            <input type="checkbox" ${isSelected ? 'checked' : ''}>
+        `;
+        container.appendChild(div);
+    });
+}
+
+/** 3. 로직 제어 함수 **/
+
+function toggleMove(move) {
+    selectedMoves[move] = !selectedMoves[move];
+    renderGroups();
+    renderMoves();
+}
+
+function groupSelect(group, isAll) {
+    // 1. 클릭된 체크박스의 그룹을 '현재 그룹'으로 설정 (화면 전환)
+    currentGroup = group;
+
+    // 2. 해당 그룹 내의 모든 동작 상태 변경
+    MOVES_IN_GROUP_DB[group].forEach(move => {
+        selectedMoves[move] = isAll;
+    });
+
+    // 3. UI 갱신 (왼쪽 그룹 카드들과 오른쪽 리스트 모두 다시 그리기)
+    renderGroups();
+    renderMoves();
+}
+
+function globalSelect(isAll) {
+    Object.keys(selectedMoves).forEach(move => {
+        selectedMoves[move] = isAll;
+    });
+    renderGroups();
+    renderMoves();
+}
+
+function updateTotalCount() {
+    const total = Object.values(selectedMoves).filter(v => v).length;
+    document.getElementById('selectedCount').innerText = `선택됨: ${total}`;
+}
+
+/** 4. 페이지 전환 **/
+
+function openSelectionPage() {
+    document.getElementById('selectionPage').style.display = 'flex';
+    renderGroups();
+    renderMoves();
+}
+
+function closeSelectionPage() {
+
+    // 여기서 실제로 추출된 [selectedMoves] 중 true인 것들만 모아 
+    // 기존 앱의 shuffledWords 배열로 전달하는 로직이 들어갑니다.
+    // 1. 선택된 동작들의 이름(키값)만 배열로 추출
+    const finalSelection = Object.keys(selectedMoves).filter(m => selectedMoves[m]);
+    // 2. 만약 하나도 선택 안 했다면 경고 (또는 전체 선택으로 복구)
+    if (finalSelection.length === 0) {
+        alert("최소 하나 이상의 동작을 선택해주세요!");
+        return;
+    }
+
+    document.getElementById('selectionPage').style.display = 'none';
+
+    // 3. 기존의 루틴 생성 로직에 전달
+    // (이전에는 Object.keys(VOICE_ASSETS) 전체를 썼다면, 이제는 finalSelection만 사용)
+    saveSelection();
+    updateRoutine(finalSelection);
+}
+
+function updateRoutine(availableMoves) {
+    console.log(availableMoves.length)
+    // 셔플 로직 실행
+    //shuffledWords = [...availableMoves].sort(() => Math.random() - 0.5);
+    shuffledWords = availableMoves;
+
+    console.log(shuffledWords.length)
+    // UI 갱신 (남은 개수 등)
+    console.log("새 루틴 생성 완료:", shuffledWords.length, "개의 동작");
+}
+
+
+
+// 초기화 및 모바일 높이 보정
+function resetHeight() { document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`); }
+
+function playHaptic() { if ("vibrate" in navigator) navigator.vibrate(40); }
+
+function applyDucking(isDucking) {
+    if (!bgGainNode|| !audioCtx) return;
+
+    const now = audioCtx.currentTime;
+    if (isDucking) {
+        // 0.2초 동안 볼륨을 0.1(10%)로 부드럽게 낮춤
+        bgGainNode.gain.linearRampToValueAtTime(0.1, now + 0.2);
+    } else {
+        // 0.5초 동안 원래 볼륨(0.5)으로 부드럽게 복구
+        bgGainNode.gain.linearRampToValueAtTime(0.5, now + 0.5);
+    }
+}
+
+// 틱 버퍼 생성기
+function createTickBuffer(seconds) {
+    const combined = audioCtx.createBuffer(1, audioCtx.sampleRate * seconds, audioCtx.sampleRate);
+    const tickData = tickBuffer.getChannelData(0);
+    const combinedData = combined.getChannelData(0);
+    for (let i = 0; i < seconds; i++) combinedData.set(tickData, i * audioCtx.sampleRate);
+    return combined;
+}
+
+function playGap() {
+    const seconds = parseInt(gapInput.value) || 10;
+    const source = audioCtx.createBufferSource();
+    source.buffer = createTickBuffer(seconds);
+    source.connect(audioCtx.destination);
+    currentTickSource = source;
+
+    source.onended = () => { 
+        if (isPlaying && currentTickSource === source) 
+            playExercise(currentIndex + 1); 
+    };
+    source.start(0);
+}
+
+// 운동 이름과 tick 소리를 멈춤.
+function stopAllSounds() {
+    if (currentSource) { 
+        currentSource.onended = null; 
+        try { currentSource.stop(); } 
+        catch(e){} currentSource = null; 
+    }
+    if (currentTickSource) { 
+        currentTickSource.onended = null; 
+        try { currentTickSource.stop(); 
+        } catch(e){} 
+        currentTickSource = null; 
+    }
+}
+
+function adjustFontSize(word) {
+    const len = word.length;
+    let size = len <= 6 ? 5 : len <= 10 ? 4 : len <= 15 ? 3.3 : 2.6;
+    wordDisplay.style.fontSize = size + "rem";
+}
+
+// 인덱스 기반 재생 엔진
+async function playExercise(index) {
+    if (index < 0) index = 0;
+    if (index >= shuffledWords.length) { finishRoutine(); return; }
+
+    currentIndex = index;
+    const word = shuffledWords[currentIndex];
+    
+    // UI 업데이트
+    wordDisplay.innerText = word.toUpperCase();
+    adjustFontSize(word);
+    updateMediaMetadata(word.toUpperCase());
+    status.innerText = `${currentIndex + 1} / ${shuffledWords.length} 진행 중`;
+
+    // 이전 소리 중단
+    stopAllSounds();
+
+    // 멘트 시작 전 음악 볼륨 낮추기 (더킹 시작)
+    applyDucking(true);
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = decodedBuffersMap[word];
+    source.connect(audioCtx.destination);
+    currentSource = source;
+
+    source.onended = () => { 
+        // 멘트가 끝나면 음악 볼륨 다시 키우기 (더킹 해제)
+        applyDucking(false);
+
+        if (isPlaying && currentSource === source) playGap(); 
+    };
+    source.start(0);
+    syncMediaPosition();
+}
+
+function updateMediaMetadata(word) {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: word, artist: 'RopeFlow Workout', artwork: [{ src: ARTWORK_BASE64, type: 'image/png' }]
+        });
+    }
+}
+
+function syncMediaPosition() {
+    if ('mediaSession' in navigator && 'setPositionState' in navigator && routineStartTime !== 0) {
+        const elapsed = audioCtx.currentTime - routineStartTime;
+        navigator.mediaSession.setPositionState({
+            duration: totalDuration,
+            playbackRate: audioCtx.state === 'running' ? 1 : 0,
+            position: Math.min(Math.max(0, elapsed), totalDuration)
+        });
+    }
+}
+
+function finishRoutine() {
+    isPlaying = false;
+    stopAllSounds();
+    wordDisplay.innerText = "FINISH!";
+    playBtn.disabled = true;
+    status.innerText = "운동이 완료되었습니다.";
+    saveSelection();
+}
+
+function updateUI() {
+    if (!isPlaying || !audioCtx || routineStartTime === 0) return;
+    if (audioCtx.state === 'running') {
+        const elapsed = audioCtx.currentTime - routineStartTime;
+        document.getElementById('currentTime').innerText = formatTime(Math.max(0, elapsed));
+    }
+    requestAnimationFrame(updateUI);
+}
+
+function formatTime(s) {
+    const mins = Math.floor(s / 60);
+    const secs = Math.floor(s % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+/*----------------------------------------------------------------------------------*/
+function jump(direction) {
+    if (!isPlaying) return;
+    playHaptic();
+    if (direction === 'next') playExercise(currentIndex + 1);
+    else playExercise(currentIndex - 1);
+}
+
+if ('mediaSession' in navigator) {
+    navigator.mediaSession.setActionHandler('play', () => playBtn.click());
+    navigator.mediaSession.setActionHandler('pause', () => playBtn.click());
+    navigator.mediaSession.setActionHandler('previoustrack', () => jump('prev'));
+    navigator.mediaSession.setActionHandler('nexttrack', () => jump('next'));
+}
+/*----------------------------------------------------------------------------------*/
+
+function saveSelection() {
+    // selectedMoves 객체를 JSON 문자열로 변환하여 로컬 스토리지에 'ropeFlowConfig'라는 이름으로 저장
+    localStorage.setItem('ropeFlowConfig', JSON.stringify(selectedMoves));
+    console.log("설정이 저장되었습니다.");
+}
+
+
+
+function loadSelection() {
+    const savedData = localStorage.getItem('ropeFlowConfig');
+    if (savedData) {
+        // 저장된 데이터가 있으면 읽어와서 selectedMoves에 덮어쓰기
+        selectedMoves = JSON.parse(savedData);
+        console.log("저장된 설정을 불러왔습니다.");
+    } else {
+        // 저장된 게 없으면 모든 동작을 true로 초기화 (기존 로직)
+        selectedMoves = {};
+        Object.keys(VOICE_ASSETS).forEach(move => {
+            if (move != 'tick') {
+                selectedMoves[move] = true;
+            }
+        });
+        console.log("selectedMoves 초기 설정을 생성했습니다.");
+    }
+
+    const savedGap = localStorage.getItem('gapTime');
+    if (savedGap == null) {
+        gapTime = DEFAULT_GAP_TIME;
+        localStorage.setItem('gapTime', gapTime);
+    }
+    else {
+        gapTime = parseInt(savedGap);
+    }
+
+    gapInput.value = gapTime;
+
+    shuffledWords = Object.keys(selectedMoves).filter(m => selectedMoves[m]);
+}
+
+window.addEventListener('resize', resetHeight);
+resetHeight();
+
+// VOICE_ASSETS를 분석하여 카테고리별로 자동 분류
+Object.keys(VOICE_ASSETS).forEach(moveName => {
+    if (moveName == "tick") return;
+
+    const groupName = VOICE_ASSETS[moveName].group;
+    if (!MOVES_IN_GROUP_DB[groupName]) {
+        MOVES_IN_GROUP_DB[groupName] = [];
+    }
+    MOVES_IN_GROUP_DB[groupName].push(moveName);
+});
+
+loadSelection();
+
+</script>
+</body>
+</html>
