@@ -142,8 +142,8 @@ button { border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font
 button:disabled { background: #333 !important; color: #666; cursor: not-allowed; }
 #setupBtn { background: var(--primary); }
 #playBtn { background: var(--success); }
-#timeInfo { display: flex; justify-content: space-between; margin-top: 20px; font-family: monospace; color: #aaa; }
-#status { margin-top: 20px; font-size: 0.8rem; color: #555; text-align: center; }
+#timeInfo { display: flex; justify-content: space-between; margin-top: 20px; font-family: monospace; color: #fff; }
+#status { margin-top: 20px; font-size: 0.8rem; color: #fff; text-align: center; }
 
 /* 슬라이더 컨테이너 스타일링 */
 .volume-controls {
