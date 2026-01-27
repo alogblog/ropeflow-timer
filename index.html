@@ -433,7 +433,7 @@ function finishRoutine() {
     stopVoiceAndTick();
 
     silentPlayer.pause();
-    bgMusicPlayer.stop();
+    bgMusicPlayer.pause();
 
     wordDisplay.innerText = i18n['finished'];
     playBtn.disabled = true;
