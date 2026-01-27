@@ -2,6 +2,7 @@ const CACHE_NAME = 'rope-flow-v1.2';
 const ASSETS = [
   'index.html',
   'ropeflow-styles.css',
+  'alarm-327234.mp3',
   'whip-afro-dancehall-music-110235.mp3' // 여기에 배경음악 파일명을 넣으세요!
 ];
 
