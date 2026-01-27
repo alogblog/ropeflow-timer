@@ -428,11 +428,11 @@ function syncMediaPosition() {
     }
 }
 
-async function finishRoutine() {
+function finishRoutine() {
     isPlaying = false;
     stopVoiceAndTick();
 
-    silentPlayer.stop();
+    silentPlayer.pause();
     bgMusicPlayer.stop();
 
     wordDisplay.innerText = i18n['finished'];
