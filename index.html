@@ -431,6 +431,10 @@ function syncMediaPosition() {
 function finishRoutine() {
     isPlaying = false;
     stopVoiceAndTick();
+
+    silentPlayer.stop();
+    bgMusicPlayer.stop();
+
     wordDisplay.innerText = i18n['finished'];
     playBtn.disabled = true;
     statusDiv.innerText = i18n['status_finished'];
