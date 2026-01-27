@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rope-flow-v1.1';
+const CACHE_NAME = 'rope-flow-v1.2';
 const ASSETS = [
   'index.html',
   'ropeflow-styles.css',
