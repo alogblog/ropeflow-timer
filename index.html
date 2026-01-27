@@ -8,6 +8,8 @@
     <link rel="manifest" href="manifest.json">
     <title>RopeFlow Pro Timer</title>
     <script src="voices.js"></script>
+    <script src="langs.js"></script>
+    <script src="ui.js"></script>
 </head>
 <body>
     <!-- -------------------------------------------------------------------------- -->
@@ -18,12 +20,12 @@
     <div id="selectionPage">
         <div class="modal-header">
             <div class="global-btns">
-                <button onclick="globalSelect(true)">All</button>
-                <button onclick="globalSelect(false)">None</button>
+                <button onclick="globalSelect(true)" data-i18n="all"></button>
+                <button onclick="globalSelect(false)" data-i18n="none"></button>
             </div>
-            <button onclick="cancelSelection()" style="background: #555;">Cancel</button>
-            <div id="selectedCount" style="font-size: 0.9rem; color: #aaa;">선택됨: 0</div>
-            <button class="done-btn" onclick="closeSelectionPage()">Done</button>
+            <button onclick="cancelSelection()" style="background: #555;" data-i18n="cancel"></button>
+            <div id="selectedCount" style="font-size: 0.9rem; color: #aaa;"></div>
+            <button class="done-btn" onclick="closeSelectionPage()" data-i18n="done"></button>
         </div>
 
         <div class="modal-body">
@@ -36,14 +38,14 @@
     <!-- -------------------------------------------------------------------------- -->
     <!-- -------------------------------------------------------------------------- -->
 
-    <div id="wordDisplay">READY</div>
+    <div id="wordDisplay" data-i18n="ready" style="text-transform: uppercase;"></div>
 
     <div class="container">
-        <div style="text-align:center; margin-bottom:15px;">간격(Gap): <input type="number" id="gapInput"> 초</div>
+        <div style="text-align:center; margin-bottom:15px;"><span data-i18n="gap"></span>:<input type="number" id="gapInput"> <span data-i18n="sec"></span></div>
         
         <div class="controls">
-            <button id="setupBtn">루틴 셔플 & 시작</button>
-            <button id="playBtn" disabled>재생 / 일시정지</button>
+            <button id="setupBtn" data-i18n="shuffle_and_play"></button>
+            <button id="playBtn" data-i18n="play_or_pause" disabled></button>
         </div>
 
         <div id="timeInfo">
@@ -53,32 +55,54 @@
 
         <div class="volume-controls">
             <div class="volume-row">
-                <span class="volume-label">📢 음성</span>
+                <span class="volume-label" data-i18n="voice"></span>
                 <input type="range" id="voiceVol" min="0" max="1" step="0.01" value="1">
             </div>
             <div class="volume-row">
-                <span class="volume-label">🎵 배경</span>
+                <span class="volume-label" data-i18n="bg"></span>
                 <input type="range" id="bgVol" min="0" max="1" step="0.01" value="0.5">
             </div>
+
+            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+            
+            <div class="volume-row">
+                <span class="volume-label" style="width: auto; flex-grow: 1;">📱 화면 켜짐 유지</span>
+                <label class="switch">
+                    <input type="checkbox" id="wakeLockTick">
+                    <span class="slider-round"></span>
+                </label>
+            </div>
+
+            <div class="volume-row">
+                <span class="volume-label" style="width: auto; flex-grow: 1;">🔔 <span id="label-text">50분 휴식 알림</span></span>
+                <span id="alarm-time" style="cursor: pointer; text-decoration: underline; font-weight: bold; color: #007bff; margin-right: 10px;">50</span>
+                <label class="switch">
+                    <input type="checkbox" id="breakNotifyTick">
+                    <span class="slider-round"></span>
+                </label>
+            </div>            
         </div>
 
-        <div id="status">새 루틴을 생성해 주세요.</div>
+        <div id="status" data-i18n="status_info"></div>
     </div>
 
     <audio id="silentPlayer" loop style="display:none;"></audio>
-    <audio id="bgMusic" src="./whip-afro-dancehall-music-110235.mp3" loop></audio>
+    <audio id="bgMusicPlayer" src="./whip-afro-dancehall-music-110235.mp3" loop></audio>
 
 
 <script>
 const wordDisplay = document.getElementById('wordDisplay');
 const setupBtn = document.getElementById('setupBtn');
 const playBtn = document.getElementById('playBtn');
-const status = document.getElementById('status');
+const statusDiv = document.getElementById('status');
 const silentPlayer = document.getElementById('silentPlayer');
 const gapInput = document.getElementById('gapInput');
-const bgMusic = document.getElementById('bgMusic');
+const bgMusicPlayer = document.getElementById('bgMusicPlayer');
 const bgVolumeSlider = document.getElementById('bgVol');
 const voiceVolumeSlider = document.getElementById('voiceVol');
+const alarmTimeSpan = document.getElementById('alarm-time');
+const currentTimeSpan = document.getElementById('currentTime');
+const totalTimeSpan = document.getElementById('totalTime');
 
 const MOVES_IN_GROUP_DB = {};
 const DEFAULT_GAP_TIME = 20;
@@ -92,12 +116,12 @@ let shuffledWords = [];
 let currentIndex = 0;
 let currentSource = null;
 let currentTickSource = null;
-let isPlaying = false;
+let isPlaying = false; // 시작 버튼을 누르면 true, 루틴이 정상적으로 모두 재생완료되면 false.
 let routineStartTime = 0; // 전체 루틴 시작 시간 (UI 타이머용)
 let totalDuration = 0;
 let bgSource = null;
 let bgGainNode = null; // 음악 볼륨 조절기
-let isAppPaused = !true; // 실제 앱의 논리적 상태. audioCtx.state === 'running' 대신에, 변수로.
+
 // 사용자의 선택 상태 저장 (기본값: 모두 선택)
 let tempSelectedMoves = {}; // 설정을 위한 임시 저장소
 let selectedMoves = {};
@@ -110,8 +134,10 @@ let mainVoiceGainNode = null; // 모든 음성(운동음, 틱)이 통과할 관�
 
 async function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
     if (Object.keys(decodedBuffersMap).length > 0) return;
-    status.innerText = "음성 데이터 로딩 중...";
+    statusDiv.innerText = i18n['loading_sounds'];
+
     for (const [name, base64] of Object.entries(VOICE_ASSETS)) {
         //console.log(base64)
         const resp = await fetch(base64.data);
@@ -135,7 +161,7 @@ function initBgMusic() {
     // bgSource가 이미 있다는 건 이미 연결되어 흐르고 있다는 뜻입니다.
     if (!bgSource) {
         // 1. 음악 소스 생성
-        bgSource = audioCtx.createMediaElementSource(bgMusic);
+        bgSource = audioCtx.createMediaElementSource(bgMusicPlayer);
         // 2. 볼륨 조절 노드 생성
         bgGainNode = audioCtx.createGain();
         // 3. 연결: 소스 -> 볼륨 노드 -> 최종 출력
@@ -144,12 +170,12 @@ function initBgMusic() {
         
         // 초기 배경 음악 볼륨 설정 (예: 50%)
         bgGainNode.gain.value = 0.8; 
-        bgMusic.volume = 0.8; 
+        bgMusicPlayer.volume = 0.8; 
     }
 
     // 만약 음악이 멈춰있었다면(첫 시작 시) 재생, 이미 나오고 있다면 아무 일도 안 함
-    if (bgMusic.paused) {
-        bgMusic.play();
+    if (bgMusicPlayer.paused) {
+        bgMusicPlayer.play();
     }
 }
 
@@ -183,12 +209,6 @@ setupBtn.onclick = async () => {
     playHaptic();
     setupBtn.disabled = true;
 
-    // if (audioCtx) { 
-    //     stopAllSounds(); 
-    //     await audioCtx.close(); 
-    //     audioCtx = null; 
-    // }
-
     // [변경] 컨텍스트를 새로 만들지 않고, 기존 것을 재사용합니다.
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -196,7 +216,7 @@ setupBtn.onclick = async () => {
         await audioCtx.resume();
     }
     // 1. 현재 재생 중인 모든 운동 음성/틱 소리만 즉시 중단
-    stopAllSounds(); 
+    stopVoiceAndTick(); 
 
     await initAudio();
 
@@ -231,7 +251,7 @@ setupBtn.onclick = async () => {
 
     //const gap = parseInt(gapInput.value) || DEFAULT_GAP_TIME;
     totalDuration = shuffledWords.reduce((acc, w) => acc + decodedBuffersMap[w].duration, 0) + (gapTime * (shuffledWords.length - 1));
-    document.getElementById('totalTime').innerText = formatTime(totalDuration);
+    totalTimeSpan.innerText = formatTime(totalDuration);
 
     isPlaying = true;
     routineStartTime = audioCtx.currentTime;
@@ -245,10 +265,19 @@ setupBtn.onclick = async () => {
     // 4. 새 루틴 시작 (배경음악은 pause/play 없이 계속 흐름)
     playBtn.disabled = false;
     setupBtn.disabled = false;
-    playBtn.innerText = "일시중지"; // 레이블 강제 고정
+    playBtn.innerText = i18n['pause']; // 레이블 강제 고정
     if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = "playing";
     }
+
+    requestWakeLock();
+
+    if (workoutStartTime == null) {
+        startAlarm();
+    }
+
+    if (!startedProtection) startProtection();
+
     playExercise(0);
     requestAnimationFrame(updateUI);
 };
@@ -260,196 +289,31 @@ playBtn.onclick = async (event) => {
 
     //initBgMusic(); // 배경음악 연결 확인
 
-    //if (!isAppPaused) {
     if (audioCtx.state === 'running') {
     //if (playBtn.innerText === "일시중지") {
         // 일시중지 실행
         await audioCtx.suspend();
-        bgMusic.pause(); // 운동 멈출 때 음악도 정지
+        bgMusicPlayer.pause(); // 운동 멈출 때 음악도 정지
         console.log("bg pause")
-        isAppPaused = true;
         silentPlayer.pause();
-        playBtn.innerText = "루틴 재개";
+        playBtn.innerText = i18n['resume'];
         if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
+
+        releaseWakeLock();
     } else {
         await audioCtx.resume();
-        bgMusic.play(); // 운동 시작할 때 음악도 재생
+        bgMusicPlayer.play(); // 운동 시작할 때 음악도 재생
         console.log("bg play")
         // 재생 실행
-        isAppPaused = false;
         silentPlayer.play();
-        playBtn.innerText = "일시중지";
+        playBtn.innerText = i18n['pause'];
         if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+
+        requestWakeLock();
     }
     syncMediaPosition();
 };
 
-</script>
-
-
-<script>
-
-
-
-/** 2. UI 렌더링 함수 **/
-
-// 왼쪽 그룹 사이드바 렌더링
-// renderGroups 함수 내 HTML 구조 변경
-function renderGroups() {
-    const container = document.getElementById('groupList');
-    container.innerHTML = '';
-
-    Object.keys(MOVES_IN_GROUP_DB).forEach(group => {
-        const div = document.createElement('div');
-        div.className = `group-item ${group === currentGroup ? 'active' : ''}`;
-        
-        // 버튼 자체를 클릭하면 그룹 변경
-        div.onclick = () => { 
-            currentGroup = group; 
-            renderGroups(); 
-            renderMoves(); 
-        };
-
-        const total = MOVES_IN_GROUP_DB[group].length;
-        const selected = MOVES_IN_GROUP_DB[group].filter(m => tempSelectedMoves[m]).length;
-
-        div.innerHTML = `
-            <div class="group-title">
-                ${group}<br>
-                <span style="font-size:0.75rem; color:var(--primary); font-weight:normal;">
-                    (${selected}/${total})
-                </span>
-            </div>
-            <div class="group-controls">
-                <label onclick="event.stopPropagation()">
-                    <input type="checkbox" ${selected === total ? 'checked' : ''} 
-                        onchange="groupSelect('${group}', true)">
-                    <span>ALL</span>
-                </label>
-                <label onclick="event.stopPropagation()">
-                    <input type="checkbox" ${selected === 0 ? 'checked' : ''} 
-                        onchange="groupSelect('${group}', false)">
-                    <span>NONE</span>
-                </label>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-    updateTotalCount();
-}
-// 오른쪽 동작 리스트 렌더링
-function renderMoves() {
-    const container = document.getElementById('moveList');
-    container.innerHTML = `<h3 style="padding-left:10px;">${currentGroup}</h3>`;
-
-    MOVES_IN_GROUP_DB[currentGroup].forEach(move => {
-        const isSelected = tempSelectedMoves[move];
-        const div = document.createElement('div');
-        
-        // 아이템 전체에 active/inactive 클래스 적용
-        div.className = `move-item ${isSelected ? 'active' : 'inactive'}`;
-        
-        // 전체 영역 클릭 시 동작 호출
-        div.onclick = () => toggleMove(move);
-
-        div.innerHTML = `
-            <span style="font-size: 1.1rem; font-weight: 500;">${move}</span>
-            <input type="checkbox" ${isSelected ? 'checked' : ''}>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/** 3. 로직 제어 함수 **/
-
-function toggleMove(move) {
-    tempSelectedMoves[move] = !tempSelectedMoves[move];
-    renderGroups();
-    renderMoves();
-}
-
-function groupSelect(group, isAll) {
-    // 1. 클릭된 체크박스의 그룹을 '현재 그룹'으로 설정 (화면 전환)
-    currentGroup = group;
-
-    // 2. 해당 그룹 내의 모든 동작 상태 변경
-    MOVES_IN_GROUP_DB[group].forEach(move => {
-        tempSelectedMoves[move] = isAll;
-    });
-
-    // 3. UI 갱신 (왼쪽 그룹 카드들과 오른쪽 리스트 모두 다시 그리기)
-    renderGroups();
-    renderMoves();
-}
-
-function globalSelect(isAll) {
-    Object.keys(tempSelectedMoves).forEach(move => {
-        tempSelectedMoves[move] = isAll;
-    });
-    renderGroups();
-    renderMoves();
-}
-
-function updateTotalCount() {
-    const total = Object.values(tempSelectedMoves).filter(v => v).length;
-    document.getElementById('selectedCount').innerText = `선택됨: ${total}`;
-}
-
-/** 4. 페이지 전환 **/
-
-function openSelectionPage() {
-    // 현재의 진짜 설정을 복사해서 임시 저장소에 넣습니다. (깊은 복사)
-    tempSelectedMoves = JSON.parse(JSON.stringify(selectedMoves));
-
-    document.getElementById('selectionPage').style.display = 'flex';
-    renderGroups();
-    renderMoves();
-}
-
-function closeSelectionPage() {
-
-    // 여기서 실제로 추출된 [selectedMoves] 중 true인 것들만 모아 
-    // 기존 앱의 shuffledWords 배열로 전달하는 로직이 들어갑니다.
-    // 1. 선택된 동작들의 이름(키값)만 배열로 추출
-    const finalSelection = Object.keys(tempSelectedMoves).filter(m => tempSelectedMoves[m]);
-    // 2. 만약 하나도 선택 안 했다면 경고 (또는 전체 선택으로 복구)
-    if (finalSelection.length === 0) {
-        alert("최소 하나 이상의 동작을 선택해주세요!");
-        return;
-    }
-    // 임시 데이터를 진짜 데이터로 확정!
-    selectedMoves = tempSelectedMoves;
-
-    document.getElementById('selectionPage').style.display = 'none';
-    // 3. 기존의 루틴 생성 로직에 전달
-    // (이전에는 Object.keys(VOICE_ASSETS) 전체를 썼다면, 이제는 finalSelection만 사용)
-    saveSelection();
-    updateRoutine(finalSelection);
-}
-// [취소 버튼] - 새로 추가
-function cancelSelection() {
-    // 아무것도 저장하지 않고 그냥 닫아버립니다. 
-    // tempSelectedMoves는 다음 오픈 시 초기화되므로 상관없습니다.
-    document.getElementById('selectionPage').style.display = 'none';
-}
-
-function updateRoutine(availableMoves) {
-    console.log(availableMoves.length)
-    // 셔플 로직 실행
-    //shuffledWords = [...availableMoves].sort(() => Math.random() - 0.5);
-    shuffledWords = availableMoves;
-
-    console.log(shuffledWords.length)
-    // UI 갱신 (남은 개수 등)
-    console.log("새 루틴 생성 완료:", shuffledWords.length, "개의 동작");
-}
-
-
-
-// 초기화 및 모바일 높이 보정
-function resetHeight() { document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`); }
-
-function playHaptic() { if ("vibrate" in navigator) navigator.vibrate(40); }
 
 function applyDucking(isDucking) {
     if (!bgGainNode|| !audioCtx) return;
@@ -465,7 +329,7 @@ function applyDucking(isDucking) {
 }
 
 // 틱 버퍼 생성기
-function createTickBuffer(seconds) {
+function _createTickBuffer(seconds) {
     const combined = audioCtx.createBuffer(1, audioCtx.sampleRate * seconds, audioCtx.sampleRate);
     const tickData = tickBuffer.getChannelData(0);
     const combinedData = combined.getChannelData(0);
@@ -476,7 +340,7 @@ function createTickBuffer(seconds) {
 function playGap() {
     const seconds = parseInt(gapInput.value) || DEFAULT_GAP_TIME;
     const source = audioCtx.createBufferSource();
-    source.buffer = createTickBuffer(seconds);
+    source.buffer = _createTickBuffer(seconds);
 
     source.connect(mainVoiceGainNode);
     currentTickSource = source;
@@ -489,7 +353,7 @@ function playGap() {
 }
 
 // 운동 이름과 tick 소리를 멈춤.
-function stopAllSounds() {
+function stopVoiceAndTick() {
     if (currentSource) { 
         currentSource.onended = null; 
         try { currentSource.stop(); } 
@@ -521,10 +385,10 @@ async function playExercise(index) {
     wordDisplay.innerText = word.toUpperCase();
     adjustFontSize(word);
     updateMediaMetadata(word.toUpperCase());
-    status.innerText = `${currentIndex + 1} / ${shuffledWords.length} 진행 중`;
+    statusDiv.innerText = `${currentIndex + 1} / ${shuffledWords.length} ` + i18n['steps'];
 
     // 이전 소리 중단
-    stopAllSounds();
+    stopVoiceAndTick();
 
     // 멘트 시작 전 음악 볼륨 낮추기 (더킹 시작)
     applyDucking(true);
@@ -566,18 +430,21 @@ function syncMediaPosition() {
 
 function finishRoutine() {
     isPlaying = false;
-    stopAllSounds();
-    wordDisplay.innerText = "FINISH!";
+    stopVoiceAndTick();
+    wordDisplay.innerText = i18n['finished'];
     playBtn.disabled = true;
-    status.innerText = "운동이 완료되었습니다.";
+    statusDiv.innerText = i18n['status_finished'];
+
+    startedProtection = false;
     saveSelection();
 }
 
 function updateUI() {
     if (!isPlaying || !audioCtx || routineStartTime === 0) return;
+
     if (audioCtx.state === 'running') {
         const elapsed = audioCtx.currentTime - routineStartTime;
-        document.getElementById('currentTime').innerText = formatTime(Math.max(0, elapsed));
+        currentTimeSpan.innerText = formatTime(Math.max(0, elapsed));
     }
     requestAnimationFrame(updateUI);
 }
@@ -665,6 +532,22 @@ function loadSelection() {
     shuffledWords = Object.keys(selectedMoves).filter(m => selectedMoves[m]);
 }
 
+function applyLanguage() {
+    // data-i18n 속성을 가진 모든 요소를 찾아 텍스트를 교체합니다.
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[key]) {
+            el.innerText = i18n[key];
+        }
+    });
+
+    // placeholder나 alert 메시지도 적용
+    statusDiv.innerText = i18n['status_info'];
+}
+
+// 앱 실행 시 호출
+applyLanguage();
+
 window.addEventListener('resize', resetHeight);
 resetHeight();
 
@@ -681,8 +564,289 @@ Object.keys(VOICE_ASSETS).forEach(moveName => {
 
 loadSelection();
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// 화면켜짐 관련.
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+let wakeLock = null;
+let keepScreenOn = localStorage.getItem('ropeFlowWakeLock') === 'true';
+
+// 1. 페이지 로드 시 설정 반영
+document.getElementById('wakeLockTick').checked = keepScreenOn;
+
+// 2. 토글 스위치 변경 이벤트
+document.getElementById('wakeLockTick').addEventListener('change', (e) => {
+    keepScreenOn = e.target.checked;
+    localStorage.setItem('ropeFlowWakeLock', keepScreenOn);
+});
+
+// 3. 화면 켜짐 유지 요청 함수
+async function requestWakeLock() {
+    if (!keepScreenOn) return;
+    
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake Lock 활성화됨');
+        }
+    } catch (err) {
+        console.error('Wake Lock 실패:', err);
+    }
+}
+
+// 4. 화면 켜짐 유지 해제 함수
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+            wakeLock = null;
+            console.log('Wake Lock 해제됨');
+        });
+    }
+}
+
+// --- 기존 운동 로직에 연결 ---
+//function startWorkout() { // 운동 시작 버튼 클릭 시 호출되는 함수
+//    // ... 기존 로직 ...
+//    requestWakeLock();  //////////////// <-- 실제 루틴 위치에서 적용.
+//}
+
+// function stopWorkout() { // 운동 종료/중단 시 호출되는 함수
+//     // ... 기존 로직 ...
+//     releaseWakeLock();<-- 실제 루틴 위치에서 적용.
+// }
+
+// 5. [중요] 탭을 나갔다 들어왔을 때 재활성화
+// 브라우저는 보안상 탭이 보이지 않으면 Wake Lock을 자동으로 풉니다.
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// 50분 알람 기능 관련.
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+let workoutStartTime = null;
+let breakNotified = false;
+let breakNotifyEnabled = localStorage.getItem('ropeFlowBreakNotify') === 'true';
+let alarmTime = parseInt(localStorage.getItem('ropeFlowAlarmTime')) || 50;
+// 초기 화면 업데이트
+alarmTimeSpan.innerText = alarmTime;
+
+alarmTimeSpan.addEventListener('click', function() {
+    if (audioCtx && audioCtx.state ==)
+    // 선택지 생성 (20, 30, 40, 50, 60)
+    const options = [2, 3, 4, 5, 6]; //[20, 30, 40, 50, 60];
+    
+    // 가장 간단하고 직관적인 브라우저 기본 선택창(prompt) 혹은 
+    // 커스텀 UI 대신 사용할 수 있는 빠른 선택 로직입니다.
+    
+    // 방법 A: 간단한 prompt 사용 (모바일 환경에서 의외로 편리함)
+    /*
+    let newTime = prompt("알람 시간(분)을 선택하세요: 20, 30, 40, 50, 60", alarmTime);
+    if (newTime && options.includes(parseInt(newTime))) {
+        updateAlarmTime(parseInt(newTime));
+    }
+    */
+
+    // 방법 B: 클릭할 때마다 숫자가 순환하는 방식 (UI가 깔끔함)
+    //*
+    let currentIndex = options.indexOf(alarmTime);
+    let nextIndex = (currentIndex + 1) % options.length;
+    updateAlarmTime(options[nextIndex]);
+    //*/
+
+    // 방법 C: 요청하신 '5개 중 하나 선택'을 위한 간단한 커스텀 알림창(또는 모달) 생성
+    // 여기서는 가장 깔끔한 '순환 방식'이나 '간단한 UI'를 추천드리지만, 
+    // 구체적인 선택을 위해 아래와 같은 로직을 제안합니다.
+    
+    //openTimePicker(options);
+});
+
+// 값을 설정하고 저장하는 공통 함수
+function updateAlarmTime(newVal) {
+    alarmTime = newVal;
+    alarmTimeSpan.innerText = alarmTime;
+    localStorage.setItem('ropeFlowAlarmTime', alarmTime);
+    console.log(`알람 시간이 ${alarmTime}분으로 설정되었습니다.`);
+}
+
+// 간단한 선택용 UI (임시 모달 방식)
+function openTimePicker(options) {
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:1000;";
+    
+    const menu = document.createElement('div');
+    menu.style = "background:white; padding:20px; border-radius:10px; text-align:center; color: #333";
+    menu.innerHTML = "<p style='margin-bottom:15px; font-weight:bold;'>알람 시간 선택 (분)</p>";
+    
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.style = "margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: 1px solid #ddd; background: " + (opt === alarmTime ? "#007bff" : "#f8f9fa") + "; color: " + (opt === alarmTime ? "white" : "black");
+        btn.onclick = () => {
+            updateAlarmTime(opt);
+            document.body.removeChild(overlay);
+        };
+        menu.appendChild(btn);
+    });
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.innerText = "취소";
+    cancelBtn.style = "display:block; width:100%; margin-top:15px; padding:10px; border:none; background:#eee; cursor:pointer;";
+    cancelBtn.onclick = () => document.body.removeChild(overlay);
+    menu.appendChild(cancelBtn);
+
+    overlay.appendChild(menu);
+    document.body.appendChild(overlay);
+}
+
+// 1. 설정 로드 및 이벤트 리스너
+document.getElementById('breakNotifyTick').checked = breakNotifyEnabled;
+document.getElementById('breakNotifyTick').addEventListener('change', (e) => {
+    breakNotifyEnabled = e.target.checked;
+    localStorage.setItem('ropeFlowBreakNotify', breakNotifyEnabled);
+    if (breakNotifyEnabled) {
+        requestNotificationPermission(); // 권한 요청
+
+        if(audioCtx) { // 앱을 실행한 후에, 아직 shuffle&start를 안누른 상태면, audioContxt가 null이다.
+            // 이후 셔츨/시작 한후 재생/정지를 반복한 경우에는 audioContext가 계속 존재한다.
+            console.log('isPlaying?' + audioCtx.state);
+            startAlarm();
+        }
+    }
+    else {
+        alarmTimeSpan.innerText = alarmTime;
+        workoutStartTime = null;
+    }
+});
+
+// 2. 알림 권한 요청 함수
+function requestNotificationPermission() {
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+}
+
+// 3. 50분 체크 함수 (1분마다 실행)
+function checkBreakTime() {
+    if (!workoutStartTime || !breakNotifyEnabled || breakNotified) return;
+
+    const now = Date.now();
+    const elapsedMinutes = (now - workoutStartTime) / (1000 * 60);
+
+    const leftAlarmTime = alarmTime - parseInt(elapsedMinutes);
+
+    alarmTimeSpan.innerText = leftAlarmTime; //formatTime((now - workoutStartTime)/1000);
+
+
+    if (elapsedMinutes >= alarmTime) {
+        alarmTimeSpan.innerText = alarmTime;
+
+        audioCtx.suspend();
+        bgMusicPlayer.pause();
+        silentPlayer.pause();
+
+        playBtn.innerText = i18n['play_or_pause'];
+        playBtn.disabled = true;
+
+        breakNotified = false; //reset.
+        triggerBreakAlert();
+
+        breakNotified = true; // 한 번만 알림
+    } else {
+        // 아직 50분이 안 됐으면 1분 뒤 다시 체크
+        setTimeout(checkBreakTime, 60000);
+        //setTimeout(checkBreakTime, 1000);
+    }
+}
+
+// 4. 실제 알림 발생 (소리 + 시스템 알림)
+function triggerBreakAlert() {
+    // A. 시스템 알림창 띄우기
+    if (Notification.permission === "granted") {
+        new Notification("RopeFlow 휴식 시간", {
+            body: "벌써 50분간 운동하셨네요! 10분간 휴식하세요.",
+            icon: "icon-192.png" // 앱 아이콘 경로
+        });
+    }
+
+    // B. 안내 음성 재생 (기존 오디오 객체 활용 혹은 새 객체)
+    // 별도의 '휴식 안내' mp3가 있다면 그 파일을 재생합니다.
+    const breakAudio = new Audio('alarm-327234.mp3'); 
+    breakAudio.volume = document.getElementById('bgVol').value; // 기존 BGM 볼륨값 적용
+    breakAudio.play().catch(e => console.log("오디오 재생 실패:", e));
+    
+    // 알림 후 화면에 메시지 표시 (선택 사항)
+    //alert("50분 경과! 잠시 휴식하세요.");
+
+    endAlarm();
+}
+
+// --- 기존 운동 시작/종료 함수에 연결 ---
+
+function startAlarm() {
+    workoutStartTime = Date.now();
+    breakNotified = false;
+    if (breakNotifyEnabled) {
+        console.log('startAlarm-----------');
+        checkBreakTime();
+    }
+}
+
+function endAlarm() {
+    workoutStartTime = null;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// 뒤로가기/새로고침 등으로 오디오재생이 끊김을 방지.
+// 시작할 때 두 장치를 모두 켭니다.
+let isWorkoutRunning = false;
+let startedProtection = false;
+
+function startProtection() {
+    isWorkoutRunning = true;
+    startedProtection = true;
+    // 1. 탭 닫기/새로고침 방지
+    window.onbeforeunload = (e) => {
+        if (isWorkoutRunning) {
+            // 현대적인 브라우저에서는 메시지를 직접 지정해도 표준 문구가 출력됩니다.
+            e.preventDefault();
+            e.returnValue = ''; 
+        }
+    }; 
+    
+    // 2. 뒤로가기 방지
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => {
+        if (isWorkoutRunning) {
+            if (confirm("운동을 중단하시겠습니까?")) {
+                isWorkoutRunning = false;
+                history.back();
+            } else {
+                history.pushState(null, null, location.href);
+            }
+        }
+    };
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+// PWA 등록.
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+    try {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+    catch (err) {
+        console.error('service-worker.js register 실패:', err);
+    }
 }
 </script>
 </body>
