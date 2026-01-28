@@ -583,6 +583,10 @@ document.getElementById('wakeLockTick').checked = keepScreenOn;
 document.getElementById('wakeLockTick').addEventListener('change', (e) => {
     keepScreenOn = e.target.checked;
     localStorage.setItem('ropeFlowWakeLock', keepScreenOn);
+
+    if(!keepScreenOn) {
+        releaseWakeLock();
+    }
 });
 
 // 3. 화면 켜짐 유지 요청 함수
