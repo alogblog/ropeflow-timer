@@ -584,7 +584,10 @@ document.getElementById('wakeLockTick').addEventListener('change', (e) => {
     keepScreenOn = e.target.checked;
     localStorage.setItem('ropeFlowWakeLock', keepScreenOn);
 
-    if(!keepScreenOn) {
+    if (keepScreenOn) {
+        requestWakeLock();
+    }
+    else {
         releaseWakeLock();
     }
 });
