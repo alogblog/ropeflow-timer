@@ -260,6 +260,12 @@ setupBtn.onclick = async () => {
     //await audioCtx.resume(); // 오디오 컨텍스트 즉시 재개
     silentPlayer.play();     // 무음 플레이어 즉시 재생
     initBgMusic(); // 배경음악 연결 확인
+
+    // 빈 소리를 한 번 재생해서 오디오 통로를 뚫어줍니다 (중요!)
+    breakAudio.play().then(() => {
+        breakAudio.pause();
+        breakAudio.currentTime = 0;
+    }).catch(e => console.log("Audio unlock failed"));
     //bgMusic.play(); 
 
     // 4. 새 루틴 시작 (배경음악은 pause/play 없이 계속 흐름)
@@ -650,7 +656,7 @@ alarmTimeSpan.innerText = alarmTime;
 
 alarmTimeSpan.addEventListener('click', function() {
     // 선택지 생성 (20, 30, 40, 50, 60)
-    const options = [1, 20, 30, 40, 50, 60];
+    const options = [3, 20, 30, 40, 50, 60];
     
     // 가장 간단하고 직관적인 브라우저 기본 선택창(prompt) 혹은 
     // 커스텀 UI 대신 사용할 수 있는 빠른 선택 로직입니다.
@@ -776,19 +782,41 @@ function checkBreakTime() {
     }
 }
 
+let breakAudio = new Audio('alarm-327234.mp3'); 
+
 // 4. 실제 알림 발생 (소리 + 시스템 알림)
 function triggerBreakAlert() {
     // A. 시스템 알림창 띄우기
     if (Notification.permission === "granted") {
-        new Notification("RopeFlow 휴식 시간", {
-            body: "벌써 50분간 운동하셨네요! 10분간 휴식하세요.",
-            icon: "icon-192.png" // 앱 아이콘 경로
-        });
+            const title = "RopeFlow 휴식 시간";
+            const options = {
+                body: "벌써 50분간 운동하셨네요! 10분간 휴식하세요.",
+                icon: "icon-192.png",
+                vibrate: [200, 100, 200], // 안드로이드 진동 추가
+                tag: 'break-alert' // 동일 태그 알림은 하나로 묶어줌 (중복 방지)
+            };
+
+            // 1. 서비스 워커 방식 시도 (PWA/모바일용)
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.showNotification(title, options);
+                });
+            } 
+            // 2. 서비스 워커가 없는 일반 브라우저 환경용
+            else {
+                new Notification(title, options);
+            }
+        } else if (Notification.permission !== "denied") {
+            // 권한이 없다면 다시 요청 (최초 1회)
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") triggerBreakAlert();
+            });
+        }
     }
 
     // B. 안내 음성 재생 (기존 오디오 객체 활용 혹은 새 객체)
     // 별도의 '휴식 안내' mp3가 있다면 그 파일을 재생합니다.
-    const breakAudio = new Audio('alarm-327234.mp3'); 
+    
     breakAudio.volume = document.getElementById('bgVol').value; // 기존 BGM 볼륨값 적용
     breakAudio.play().catch(e => console.log("오디오 재생 실패:", e));
     
