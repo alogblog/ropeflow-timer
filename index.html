@@ -806,14 +806,13 @@ function triggerBreakAlert() {
             else {
                 new Notification(title, options);
             }
-        } else if (Notification.permission !== "denied") {
-            // 권한이 없다면 다시 요청 (최초 1회)
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") triggerBreakAlert();
-            });
-        }
+    } else if (Notification.permission !== "denied") {
+        // 권한이 없다면 다시 요청 (최초 1회)
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") triggerBreakAlert();
+        });
     }
-
+    
     // B. 안내 음성 재생 (기존 오디오 객체 활용 혹은 새 객체)
     // 별도의 '휴식 안내' mp3가 있다면 그 파일을 재생합니다.
     
