@@ -41,7 +41,13 @@
     <div id="wordDisplay" data-i18n="ready" style="text-transform: uppercase;"></div>
 
     <div class="container">
-        <div style="text-align:center; margin-bottom:15px;"><span data-i18n="gap"></span>:<input type="number" id="gapInput"> <span data-i18n="sec"></span></div>
+        <div id="toggle-volume" style="text-align:center; margin-bottom:15px;">
+            <span data-i18n="gap"></span>:<input type="number" id="gapInput"> 
+            <span data-i18n="sec"></span>
+
+<!--             <button id="toggle-volume999" style="background:none; border:none; cursor:pointer; 
+            font-size:2rem;">🔽</button> -->
+        </div>
         
         <div class="controls">
             <button id="setupBtn" data-i18n="shuffle_and_play"></button>
@@ -53,7 +59,7 @@
             <span id="totalTime">00:00</span>
         </div>
 
-        <div class="volume-controls">
+        <div id="volume-controls" class="volume-controls">
             <div class="volume-row">
                 <span class="volume-label" data-i18n="voice"></span>
                 <input type="range" id="voiceVol" min="0" max="1" step="0.01" value="1">
@@ -179,9 +185,16 @@ function initBgMusic() {
     }
 }
 
+gapInput.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+});
+
 gapInput.addEventListener('input', (e) => {
     gapTime = parseInt(e.target.value) || 0; // 숫자로 변환
     localStorage.setItem('gapTime', gapTime);
+
+    console.log('gapTime=' + gapTime);
 });
 
 
@@ -642,6 +655,15 @@ document.addEventListener('visibilitychange', async () => {
 });
 
 
+document.getElementById('toggle-volume').addEventListener('click', function() {
+    console.log('toggle volume...');
+    const controls = document.getElementById('volume-controls');
+    controls.classList.toggle('collapsed');
+    
+    // 아이콘을 변경하고 싶다면 (선택 사항)
+    //this.innerText = controls.classList.contains('collapsed') ? '🔼' : '🔽'; 
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // 50분 알람 기능 관련.
@@ -812,7 +834,7 @@ function triggerBreakAlert() {
             if (permission === "granted") triggerBreakAlert();
         });
     }
-    
+
     // B. 안내 음성 재생 (기존 오디오 객체 활용 혹은 새 객체)
     // 별도의 '휴식 안내' mp3가 있다면 그 파일을 재생합니다.
     
