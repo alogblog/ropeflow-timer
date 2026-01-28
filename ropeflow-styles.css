@@ -258,3 +258,18 @@ input[type="range"]:active::-webkit-slider-thumb {
 input[type="range"] {
     cursor: pointer;
 }
+
+.volume-controls {
+    max-height: 500px; /* 충분히 큰 값 */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.volume-controls.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none; /* 숨겨졌을 때 클릭 방지 */
+}
